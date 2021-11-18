@@ -3,6 +3,7 @@
 use App\Http\Controllers\Test;
 //use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Events\DataBroadcaster;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,5 +21,11 @@ use Illuminate\Support\Facades\Route;
 //});
 
 Route::get('/', [Test::class, 'index']);
-
+Route::get('/broadcast', function () {
+    for($i = 0; $i <= 30; $i++) {
+        usleep(500000);
+        broadcast(new DataBroadcaster(rand(0,2)));
+    }
+    
+});
 

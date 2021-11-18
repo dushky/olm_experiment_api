@@ -11,8 +11,9 @@ type Query @guard(with: ["sanctum"]) {
     me: User @auth
 }
 
-type Mutation {
+type Mutation @guard(with: ["sanctum"]) {
     updateUser(inputUpdate: UpdateUser @spread): User @update
+    RunScript(inputScript: String): OutputScript
 }
 
 type User {
@@ -21,6 +22,14 @@ type User {
     email: String
     created_at: DateTime
     updated_at: DateTime
+}
+
+type RunScriptType {
+    command: String
+}
+
+type OutputScript {
+    output: String
 }
 
 input UpdateUser {
