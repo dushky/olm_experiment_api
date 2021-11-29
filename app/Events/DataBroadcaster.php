@@ -22,7 +22,6 @@ class DataBroadcaster implements ShouldBroadcast
     public function __construct(String $data)
     {
         $this->data = $data;
-        //
     }
 
     public function broadcastWith() {

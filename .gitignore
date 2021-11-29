@@ -13,3 +13,25 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+/Backups
+/Cache
+/CachedData
+/CachedExtensionVSIXs/
+/CachedExtensions/
+Code Cache/
+Cookies
+Cookies-journal
+GPUCache/
+Local Storage/
+Network Persistent State
+QuotaManager
+QuotaManager-journal
+Service Worker/
+TransportSecurity
+/User
+/exthost Crash Reports/
+languagepacks.json
+/logs
+machineid
+storage.json
+code.lock
