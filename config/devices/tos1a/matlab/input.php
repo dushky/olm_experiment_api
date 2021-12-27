@@ -103,7 +103,7 @@ return [
                         "meaning" => "child_schema"
                 ]
 
-	]/*,
+	],
 	"change"  =>  [
 		[
 			"name"	=>	"reg_request",
@@ -133,5 +133,5 @@ return [
 			"placeholder" => 0,
 			"type"	=>	"text"
 		]
-	]*/
+	]
 ];

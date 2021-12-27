@@ -37,25 +37,6 @@ class Login
      */
     public function __invoke($root, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
-        // $userProvider = $this->createUserProvider();
-
-        // $user = $userProvider->retrieveByCredentials([
-        //     'email'    => $args['email'],
-        //     'password' => $args['password'],
-        // ]);
-
-        // if (! $user || ! $userProvider->validateCredentials($user, $args)) {
-        //     throw new AuthenticationException('The provided credentials are incorrect.');
-        // }
-
-        // if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
-        //     throw new AuthenticationException('Your email address is not verified.');
-        // }
-
-        // if (! $user instanceof HasApiTokens) {
-        //     throw new HasApiTokensException($user);
-        // }
-        // config('sanctum.guard', 'web')
         $guard = Auth::guard('web');
         if(!$guard->attempt($args)) {
             return [

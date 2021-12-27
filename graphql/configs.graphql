@@ -1,0 +1,74 @@
+enum ExperimentsSoftware {
+    """matlab"""
+    matlab
+
+    """openloop"""
+    openlopp
+
+    """scilab"""
+    scilab
+}
+
+enum DeviceType {
+    """tos1a"""
+    tos1a
+
+    """led_cube"""
+    led_cube
+
+    """segway"""
+    segway
+}
+
+enum ScriptName {
+    """start"""
+    start
+    
+    """update"""
+    update
+
+    """stop"""
+    stop
+
+    """change"""
+    change
+}
+
+input ConfigInput {
+    deviceType: DeviceType
+    software: ExperimentsSoftware
+}
+
+
+type Config {
+    items: [ConfigMapTuple]
+}
+
+type ConfigMapTuple {
+    scriptName: ScriptName
+    items: [ConfigItem]
+}
+
+
+type ConfigItem {
+    name: String
+    rules: String
+    title: String
+    placeholder: String
+    type: String
+}
+
+type CommandsPerDevice {
+    deviceName: String
+}
+
+extend type Query {
+    GetConfigByDeviceType(configInput: ConfigInput) :Config
+}
+
+
+
+
+
+
+
