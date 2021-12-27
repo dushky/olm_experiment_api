@@ -16,7 +16,7 @@ class Test extends Controller
             'python3', 'test.py',
             '--port', '/dev/ttyACM0',
             '--output', '/home/martin/Desktop/output.txt',
-            '--input', 'reg_request:30,input_fan:20,input_lamp:20,input_led:20,t_sim:10,s_rate:200'
+            '--input', 'reg_request:30,input_fan:0,input_lamp:0,input_led:0,t_sim:10,s_rate:200,Ks:0.1,Tdm:0.3,KP:33.33,p1:6.67,p2:111.11'
         ]);
         
         $process->start();
