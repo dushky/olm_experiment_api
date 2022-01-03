@@ -22,10 +22,10 @@ use App\Events\DataBroadcaster;
 
 Route::get('/', [Test::class, 'index']);
 Route::get('/broadcast', function () {
-    for($i = 0; $i <= 30; $i++) {
-        usleep(500000);
+    for($i = 0; $i <= 10; $i++) {
+        //usleep(10000);
         broadcast(new DataBroadcaster(rand(0,2)));
     }
-    
+    return view('welcome');
 });
 
