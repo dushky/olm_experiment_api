@@ -20,11 +20,11 @@ class GetConfigByDeviceType
     public function __invoke($root, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
         $configInput = $args['configInput'];
-        $deviceType = $configInput['deviceType'];
+        $deviceType = $configInput['deviceName'];
         $software = $configInput['software'];
 
         $items = config("devices.$deviceType.$software.input");
-        // dd(["items" => collect($items)]);
+        
         $keys = array_keys($items);
         $respItems = [];
         foreach($keys as $key) {
@@ -32,7 +32,7 @@ class GetConfigByDeviceType
             $respItem['items'] = $items[$key];
             array_push($respItems, $respItem);
         }
-        // dd(["items" => collect($respItems)]);
+        
         return [
             "items" => $respItems
         ];

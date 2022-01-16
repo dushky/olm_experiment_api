@@ -3,13 +3,13 @@ enum ExperimentsSoftware {
     matlab
 
     """openloop"""
-    openlopp
+    openloop
 
     """scilab"""
     scilab
 }
 
-enum DeviceType {
+enum DeviceName {
     """tos1a"""
     tos1a
 
@@ -35,7 +35,7 @@ enum ScriptName {
 }
 
 input ConfigInput {
-    deviceType: DeviceType
+    deviceName: DeviceName
     software: ExperimentsSoftware
 }
 
@@ -63,9 +63,8 @@ type CommandsPerDevice {
 }
 
 extend type Query {
-    GetConfigByDeviceType(configInput: ConfigInput) :Config
+    GetConfigByDeviceType(configInput: ConfigInput): Config
 }
-
 
 
 

@@ -1,6 +1,7 @@
 #import sanctum.graphql
-#import system.graphql
 #import configs.graphql
+#import system.graphql
+
 
 "A date string with format `Y-m-d`, e.g. `2011-05-23`."
 scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
@@ -16,7 +17,7 @@ type Query @guard(with: ["sanctum"]) {
 
 type Mutation @guard(with: ["sanctum"]) {
     updateUser(inputUpdate: UpdateUser @spread): User @update
-    RunScript(inputScript: String): OutputScript
+    RunScript(runScriptInput: RunScriptInput): OutputScript
 }
 
 type User {
@@ -25,6 +26,18 @@ type User {
     email: String
     created_at: DateTime
     updated_at: DateTime
+}
+
+input RunScriptInput {
+    scriptName: String
+    inputParameter: String
+    device: DeviceConfig
+}
+
+input DeviceConfig {
+    deviceName: DeviceName
+    software: ExperimentsSoftware
+    deviceID: ID!
 }
 
 type RunScriptType {

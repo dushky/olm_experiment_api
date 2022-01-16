@@ -68,14 +68,14 @@ input UpdateSoftware {
 }
 
 
-extend type Query @guard(with: ["sanctum"]) {
+extend type Query @guard(with: ["sanctum"]){
     devices: [Device!]! @paginate(defaultCount: 10)
     device_types: [DeviceType!]! @paginate(defaultCount: 10)
     software: [Software!]! @paginate(defaultCount: 10)
     getDevice(id: ID! @eq): Device! @find
 }
 
-extend type Mutation {
+extend type Mutation @guard(with: ["sanctum"]){
     createDevice(input: CreateDevice @spread): Device! @create
     updateDevice(input: UpdateDevice @spread): Device! @update
     removeDevice(id: ID!): Device! @delete
@@ -85,5 +85,4 @@ extend type Mutation {
     createSoftware(input: CreateSoftware @spread): Software! @create
     updateSoftware(input: UpdateSoftware @spread): Software! @update
     removeSoftware(id: ID!): Software! @delete
-
 }
