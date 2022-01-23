@@ -15,7 +15,7 @@
     />
     <script src="{{\MLL\GraphQLPlayground\DownloadAssetsCommand::jsPath()}}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> -->
 </head>
 
 <body>
@@ -24,8 +24,6 @@
 <script type="text/javascript">
     window.addEventListener('load', function () {
         const root = document.getElementById('root');
-
-
 
         GraphQLPlayground.init(root, {
             endpoint: "{{url(config('graphql-playground.endpoint'))}}",

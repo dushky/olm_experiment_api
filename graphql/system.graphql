@@ -76,7 +76,7 @@ extend type Query @guard(with: ["sanctum"]){
 }
 
 extend type Mutation @guard(with: ["sanctum"]){
-    createDevice(input: CreateDevice @spread): Device! @create
+    createDevice(input: CreateDevice @spread): Device! 
     updateDevice(input: UpdateDevice @spread): Device! @update
     removeDevice(id: ID!): Device! @delete
     createDeviceType(input: CreateDeviceType @spread): DeviceType! @create
