@@ -133,5 +133,6 @@ return [
 			"placeholder" => 0,
 			"type"	=>	"text"
 		]
-	]
+    ],
+    "stop" => []
 ];

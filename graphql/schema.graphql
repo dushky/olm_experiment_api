@@ -18,6 +18,7 @@ type Query @guard(with: ["sanctum"]) {
 type Mutation @guard(with: ["sanctum"]) {
     updateUser(inputUpdate: UpdateUser @spread): User @update
     RunScript(runScriptInput: RunScriptInput): OutputScript
+    StopScript(runScriptInput: RunScriptInput): OutputScript
 }
 
 type User {

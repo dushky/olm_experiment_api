@@ -12,13 +12,6 @@ import getpass
 import subprocess
 
 
-x = logging.getLogger("logfun")
-x.setLevel(logging.DEBUG)
-h1 = logging.FileHandler("/var/www/html/OnlineLab_ExperimentServer/storage/logs/devices/tos1a/matlab/m_logs/myapp.log")
-h1.setLevel(logging.DEBUG)
-x.addHandler(h1)
-
-
 def getArguments():
    parser = argparse.ArgumentParser()
    parser.add_argument("--port")
@@ -58,10 +51,10 @@ def app(args):
 				break
 	except Exception as ex:
 		logfun.exception("Something awful happened!")
-	
+
 	if ( matlabInstance is None ):
 		matlabInstance = matlab.engine.connect_matlab(matlab.engine.find_matlab()[0])
-	
+
 	logfun.debug("nacitavam argumenty")
 	logfun.debug(args)
 
@@ -88,8 +81,8 @@ def app(args):
 	matlabInstance.workspace['Umax'] = float(8000)
 	matlabInstance.workspace['Umin'] = float(0)
 
-	
-	
+
+
 	for key, value in args.items():
 		isFloat = False;
 		logfun.debug(key)
@@ -107,27 +100,23 @@ def app(args):
 				matlabInstance.eval('assignin("base", "' + key + '", eval("' + value + '"))', nargout=0)
 			except Exception as ex:
 				logfun.exception(ex)
-				
 
-	
+
+
 	#matlabInstance.eval('assignin("base", "vystupy", eval("'+ vystupy + '"))', nargout=0)
 
-	logfun.debug(args["uploaded_file"])
-	os.chdir("/var/www/html/OnlineLab_ExperimentServer/storage/app/uploads/temp/")
-	os.rename(args["uploaded_file"], args["uploaded_file"]+".slx")
-	matlabInstance.addpath("/var/www/html/OnlineLab_ExperimentServer/storage/app/uploads/temp/")
-	logfun.debug("Load thermo_test")
-	matlabInstance.load_system(args["uploaded_file"]+".slx",nargout=0)
+	os.chdir("/var/www/olm_experiment_api/server_scripts/tos1a/matlab/")
+	matlabInstance.addpath("/var/www/olm_experiment_api/server_scripts/tos1a/matlab/")
+	matlabInstance.load_system("thermo_openloop_v2.slx",nargout=0)
 	try:
-		matlabInstance.set_param(args["uploaded_file"],'SimulationCommand','start',nargout=0)
-	
+		matlabInstance.set_param("thermo_openloop_v2",'SimulationCommand','start',nargout=0)
+
 	except Exception as ex:
 		logfun.exception("Something awful happened!")
-	
-	while matlabInstance.get_param(args["uploaded_file"],'SimulationStatus') != 'stopped':
+
+	while matlabInstance.get_param("thermo_openloop_v2",'SimulationStatus') != 'stopped':
 	    pass
 	matlabInstance.quit()
-
 
 if __name__ == '__main__':
    args = getArguments()

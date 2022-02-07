@@ -60,5 +60,13 @@ return [
 	[
 		"name"  => "d_rmp",
 		"title" => "Fan derived rpm"
-	]
+    ],
+    [
+        "name" => "test1",
+        "title" => "Description test1"
+    ],
+    [
+        "name" => "test2",
+        "title" => "Description test2"
+    ]
 ];

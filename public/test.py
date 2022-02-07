@@ -35,7 +35,7 @@ def app(args):
 	logfun.debug("Inside f!")
 
 	matlabInstance = None
-    
+
 	i = 0
 	logfun.debug("hladam MATLAB")
 
@@ -51,10 +51,10 @@ def app(args):
 				break
 	except Exception as ex:
 		logfun.exception("Something awful happened!")
-	
+
 	if ( matlabInstance is None ):
 		matlabInstance = matlab.engine.connect_matlab(matlab.engine.find_matlab()[0])
-	
+
 
 	port = args["port"] + "," +  args["output_path"]
 
@@ -79,7 +79,7 @@ def app(args):
 	matlabInstance.workspace['Umin'] = float(0)
 
 	print("TEST?")
-	
+
 	for key, value in args.items():
 		isFloat = False;
 		logfun.debug(key)
@@ -97,17 +97,17 @@ def app(args):
 				matlabInstance.eval('assignin("base", "' + key + '", eval("' + value + '"))', nargout=0)
 			except Exception as ex:
 				logfun.exception(ex)
-				
 
-	os.chdir("/var/www/html/olm_experiment_api/storage/app/public/")
-	matlabInstance.addpath("/var/www/html/olm_experiment_api/storage/app/public/")
+
+	os.chdir("/var/www/olm_experiment_api/server_scripts/tos1a/matlab/")
+	matlabInstance.addpath("/var/www/olm_experiment_api/server_scripts/tos1a/matlab/")
 	matlabInstance.load_system("thermo_openloop_v2.slx",nargout=0)
 	try:
 		matlabInstance.set_param("thermo_openloop_v2",'SimulationCommand','start',nargout=0)
-	
+
 	except Exception as ex:
 		logfun.exception("Something awful happened!")
-	
+
 	while matlabInstance.get_param("thermo_openloop_v2",'SimulationStatus') != 'stopped':
 	    pass
 	matlabInstance.quit()

@@ -35,7 +35,7 @@ input CreateDevice {
 input UpdateDevice {
     id: ID!
     name: String!
-    device_type_id: ID!
+    deviceType: ID!
     port: String!
     software: [ID!]!
 }
@@ -68,6 +68,46 @@ input UpdateSoftware {
 }
 
 
+type SyncServerOutput {
+    name: String!
+    title: String!
+}
+
+type SyncServerInput {
+    name: String
+    rules: String
+    title: String
+    placeholder: String
+    type: String
+}
+
+type SyncServerCommand {
+    name: String!
+    input: [SyncServerInput]!
+}
+
+type SyncServerSoftware {
+    name: String!
+    has_schema: Boolean
+    commands: [SyncServerCommand]!
+}
+
+type SyncServerDevice {
+    name: String!
+    type: String!
+    output: [SyncServerOutput]!
+    software: [SyncServerSoftware]!
+}
+
+type SyncServerData {
+    devices: [SyncServerDevice]!
+}
+
+
+extend type Query {
+    SyncServer: SyncServerData!
+}
+
 extend type Query @guard(with: ["sanctum"]){
     devices: [Device!]! @paginate(defaultCount: 10)
     device_types: [DeviceType!]! @paginate(defaultCount: 10)
@@ -76,10 +116,10 @@ extend type Query @guard(with: ["sanctum"]){
 }
 
 extend type Mutation @guard(with: ["sanctum"]){
-    createDevice(input: CreateDevice @spread): Device! 
-    updateDevice(input: UpdateDevice @spread): Device! @update
+    createDevice(input: CreateDevice @spread): Device!
+    updateDevice(input: UpdateDevice @spread): Device!
     removeDevice(id: ID!): Device! @delete
-    createDeviceType(input: CreateDeviceType @spread): DeviceType! @create
+    createDeviceType(input: CreateDeviceType @spread): DeviceType!
     updateDeviceType(input: UpdateDeviceType @spread): DeviceType! @update
     removeDeviceType(id: ID!): DeviceType! @delete
     createSoftware(input: CreateSoftware @spread): Software! @create

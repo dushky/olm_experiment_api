@@ -13,20 +13,20 @@ use Illuminate\Queue\SerializesModels;
 class DataBroadcaster implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    private String $data;
+    private array $arrayData;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(String $data)
+    public function __construct(array $arrayData)
     {
-        $this->data = $data;
+        $this->arrayData = $arrayData;
     }
 
     public function broadcastWith() {
         return [
-            'hello' => $this->data
+            'hello' => $this->arrayData
         ];
     }
 

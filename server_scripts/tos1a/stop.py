@@ -16,16 +16,23 @@ def makeCommand( msg ):
 import serial
 import sys
 import glob
+import argparse
+
 
 if len(sys.argv) == 1:
     print("give me a path to com")
     sys.exit()
 
-port = sys.argv[1]
+parser = argparse.ArgumentParser()
+parser.add_argument("--port")
+args = parser.parse_args()
+port = args.port #sys.argv[1]
+print(port)
+ports = glob.glob('/dev/tty[A-Za-z]*')
 
-ports = glob.glob('/dev/tty[A-Za-z]*');
 if port not in ports:
-    sys.exit(1);
+    sys.exit(1)
+
 
 ser = serial.Serial(port, 115200)
 ser.write(makeCommand('SEE'))
