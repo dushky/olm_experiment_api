@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import serial
 import time
 import argparse
@@ -7,16 +7,17 @@ import calendar
 
 def calcCrc( msg ):
         "Vypocet checksumu"
-        crc = 0;
+        crc = 0
         for letter in msg:     # First Example
            crc = crc ^ ord(letter)
         crc = format(crc, 'X')
-        return crc;
+        return crc
 
 def makeCommand( msg ):
         "Vytvorenie vety"
-        final = b'$'+msg+'*'+calcCrc(msg)+'\n'
-        return final;
+        veta = msg+'*'+calcCrc(msg)+'\n'
+        final = b'$'+str.encode(veta)
+        return final
 
 def getArguments():
     parser = argparse.ArgumentParser()
@@ -26,7 +27,7 @@ def getArguments():
     port = args.port
     args = args.input
     args = args.split(",")
-    args = [pair.replace(" ","") for pair in args]
+    # args = [pair.replace(" ","") for pair in args]
     args_map = {}
     for arg in args:
        argument = arg.split(":")
@@ -40,7 +41,7 @@ def app(args):
     command = "SGV," + args["c_lamp"] + "," + args["c_fan"] + "," + args["c_led"]
     ser.write(makeCommand(command))
     ser.close()
-   
+
 if __name__ == '__main__':
     args = getArguments()
     app(args)

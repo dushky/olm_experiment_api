@@ -121,5 +121,4 @@ def app(args):
 if __name__ == '__main__':
    args = getArguments()
    app(args)
-
-
+#    subprocess.call(['sh', './testScript.sh'])

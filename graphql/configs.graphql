@@ -1,29 +1,7 @@
-enum ExperimentsSoftware {
-    """matlab"""
-    matlab
-
-    """openloop"""
-    openloop
-
-    """scilab"""
-    scilab
-}
-
-enum DeviceName {
-    """tos1a"""
-    tos1a
-
-    """led_cube"""
-    led_cube
-
-    """segway"""
-    segway
-}
-
 enum ScriptName {
     """start"""
     start
-    
+
     """update"""
     update
 
@@ -35,8 +13,8 @@ enum ScriptName {
 }
 
 input ConfigInput {
-    deviceName: DeviceName
-    software: ExperimentsSoftware
+    deviceName: String
+    software: String
 }
 
 
@@ -56,10 +34,6 @@ type ConfigItem {
     title: String
     placeholder: String
     type: String
-}
-
-type CommandsPerDevice {
-    deviceName: String
 }
 
 extend type Query {

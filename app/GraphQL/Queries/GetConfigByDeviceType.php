@@ -24,17 +24,23 @@ class GetConfigByDeviceType
         $software = $configInput['software'];
 
         $items = config("devices.$deviceType.$software.input");
-        
-        $keys = array_keys($items);
-        $respItems = [];
-        foreach($keys as $key) {
-            $respItem['scriptName'] = $key;
-            $respItem['items'] = $items[$key];
-            array_push($respItems, $respItem);
+
+        if ($items) {
+            $keys = array_keys($items);
+            $respItems = [];
+            foreach($keys as $key) {
+                $respItem['scriptName'] = $key;
+                $respItem['items'] = $items[$key];
+                array_push($respItems, $respItem);
+            }
+
+            return [
+                "items" => $respItems
+            ];
+        } else {
+            return [
+                "items" => []
+            ];
         }
-        
-        return [
-            "items" => $respItems
-        ];
     }
 }

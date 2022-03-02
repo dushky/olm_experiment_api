@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import matlab.engine
 import os
 import argparse
@@ -41,7 +41,7 @@ def app(args):
 	K0 = args["K0"]
 	T0 = args["T0"]
 	Tf = args["Tf"]
-	
+
 	matlabInstance.workspace['P'] = float(P)
 	matlabInstance.workspace['I'] = float(I)
 	matlabInstance.workspace['D'] = float(D)
@@ -56,9 +56,9 @@ def app(args):
 	if regType=="Ziadna":
 		matlabInstance.workspace['reg_type'] = float(1) #typ regulacie ziadna
 	elif regType=="PID":
-	      	matlabInstance.workspace['reg_type'] = float(2) #typ regulacie PID  
+	      	matlabInstance.workspace['reg_type'] = float(2) #typ regulacie PID
 	elif regType=="IMC":
-	      	matlabInstance.workspace['reg_type'] = float(3) #typ regulacie IMC 
+	      	matlabInstance.workspace['reg_type'] = float(3) #typ regulacie IMC
 
 	matlabInstance.set_param('thermo_simple_with_imc','SimulationCommand','update',nargout=0)
 	matlabInstance.quit()

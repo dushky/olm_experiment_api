@@ -23,6 +23,7 @@ class RunScript
         $fileName = '/home/item/Desktop/output.txt';
         set_time_limit(100);
         $date = filemtime($fileName);
+
         $lastDataLength = 0;
         // dd($args);
         $device = Device::find($args['runScriptInput']['device']['deviceID']);
@@ -31,6 +32,19 @@ class RunScript
         $scriptName = $args['runScriptInput']['scriptName'];
         $path = "../server_scripts/$deviceName/$software/$scriptName.py";
 
+
+        // $process = new Process([
+        //     './testShell.py'
+        // ]);
+
+        // $process->start();
+        // sleep(1);
+
+        // while($process->isRunning()) {
+
+        // }
+        // Log::channel('server')->info($process->getErrorOutput());
+        // Log::channel('server')->info("PROCESS OUTPUT: " . $process->getOutput());
         $process = new Process([
             "./$path",
             '--port', $device->port,
@@ -41,6 +55,7 @@ class RunScript
         $process->start();
         sleep(1);
         $output = config("devices.tos1a.output");
+        Log::channel('server')->info($process->getPid());
 
         $experiment = ExperimentLog::create([
             'device_id' => $device->id,
@@ -52,7 +67,7 @@ class RunScript
 
         while($process->isRunning()) {
             clearstatcache();
-            if ($date != filemtime($fileName)) {
+            if ($date != filemtime($fileName) && time() - $date >= 3) {
                 $date = filemtime($fileName);
                 $data = file_get_contents(
                     $fileName,
@@ -89,8 +104,8 @@ class RunScript
             $experiment->update([
                 'finished_at' => date("Y-m-d H:i:s")
             ]);
-        // Log::channel('server')->info($process->getErrorOutput());
-        // Log::channel('server')->info("PROCESS OUTPUT: " . date("Y-m-d H:i:s"));
+        Log::channel('server')->info($process->getErrorOutput());
+        Log::channel('server')->info("PROCESS OUTPUT: " . $process->getOutput());
     }
 
     private function checkKey($dataToBroadcast, $name) {

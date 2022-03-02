@@ -18,6 +18,7 @@ type Query @guard(with: ["sanctum"]) {
 type Mutation @guard(with: ["sanctum"]) {
     updateUser(inputUpdate: UpdateUser @spread): User @update
     RunScript(runScriptInput: RunScriptInput): OutputScript
+    ChangeScript(runScriptInput: RunScriptInput): OutputScript
     StopScript(runScriptInput: RunScriptInput): OutputScript
 }
 
@@ -36,8 +37,8 @@ input RunScriptInput {
 }
 
 input DeviceConfig {
-    deviceName: DeviceName
-    software: ExperimentsSoftware
+    deviceName: String
+    software: String
     deviceID: ID!
 }
 

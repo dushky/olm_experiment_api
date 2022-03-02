@@ -3,6 +3,9 @@
 namespace App\GraphQL\Mutations;
 
 use App\Models\Device;
+use App\Models\Software;
+use Illuminate\Support\Facades\File;
+
 
 class UpdateDevice
 {
@@ -21,6 +24,15 @@ class UpdateDevice
             ]);
         // dd($device);
         $device->software()->sync($args['software']);
+        $device = $device->fresh();
+        foreach($args['software'] as $soft) {
+            $software = Software::where('id', $soft)->first();
+
+            if (!File::exists(base_path().'/server_scripts/'.$device->deviceType->name.'/'.$software->name)) {
+                File::makeDirectory(base_path().'/server_scripts/'.$device->deviceType->name.'/'.$software->name, 0755, true);
+            }
+
+        }
 
         return $device;
     }

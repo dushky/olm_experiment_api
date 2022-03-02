@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 def calcCrc( msg ):
         "Vypocet checksumu"
         crc = 0;

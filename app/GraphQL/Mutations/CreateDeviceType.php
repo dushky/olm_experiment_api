@@ -18,9 +18,11 @@ class CreateDeviceType
         $deviceType = DeviceType::create([
             'name' => $args['name']
         ]);
+
         if (!File::exists(base_path().'/server_scripts/'.$args['name'])) {
             File::makeDirectory(base_path().'/server_scripts/'.$args['name'], 0755, true);
         }
+
 
         return $deviceType;
         // TODO implement the resolver

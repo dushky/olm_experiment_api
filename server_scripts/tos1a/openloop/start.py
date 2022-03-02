@@ -32,7 +32,7 @@ def getArguments():
     port = args.port
     args = args.input
     args = args.split(",")
-    args = [pair.replace(" ","") for pair in args]
+    # args = [pair.replace(" ","") for pair in args]
     args_map = {}
     for arg in args:
        argument = arg.split(":")
@@ -53,10 +53,10 @@ def startReading(args):
 
     try:
         while (now < end):
-            file = open(filePath, "a+")        
+            file = open(filePath, "a+")
             ser.write(makeCommand("SGV"))
             output = ser.readline()
-            
+
             try :
                 output = output.decode("utf-8")
                 beginPos = output.find("$") + 1
@@ -81,7 +81,7 @@ def startReading(args):
         print("Could not create file")
         ser.close()
         sys.exit(0)
-    
+
 def stopDevice(args):
     ser = serial.Serial(args["port"], 115200)
     ser.write(makeCommand('SEE'))
@@ -95,7 +95,7 @@ def app(args):
     ser.close()
     startReading(args)
     stopDevice(args)
-   
+
 if __name__ == '__main__':
     args = getArguments()
     app(args)
