@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Test;
+use App\Http\Controllers\FileController;
 //use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Events\DataBroadcaster;
@@ -20,12 +20,12 @@ use App\Events\DataBroadcaster;
 //    return $request->user();
 //});
 
-Route::get('/', [Test::class, 'index']);
-Route::get('/broadcast', function () {
-    for($i = 0; $i <= 10; $i++) {
-        //usleep(10000);
-        broadcast(new DataBroadcaster(rand(0,2)));
-    }
-    return view('welcome');
-});
+Route::post('/schema/upload', [FileController::class, 'store']);
+// Route::get('/broadcast', function () {
+//     for($i = 0; $i <= 10; $i++) {
+//         //usleep(10000);
+//         broadcast(new DataBroadcaster([rand(0,2)]));
+//     }
+//     return view('welcome');
+// });
 

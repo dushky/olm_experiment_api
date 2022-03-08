@@ -108,14 +108,18 @@ extend type Query {
     SyncServer: SyncServerData!
 }
 
-extend type Query @guard(with: ["sanctum"]){
+#extend type Query @guard(with: ["sanctum"]){
+#extend type Mutation @guard(with: ["sanctum"]){
+
+
+extend type Query{
     devices: [Device!]! @paginate(defaultCount: 10)
     device_types: [DeviceType!]! @paginate(defaultCount: 10)
     software: [Software!]! @paginate(defaultCount: 10)
     getDevice(id: ID! @eq): Device! @find
 }
 
-extend type Mutation @guard(with: ["sanctum"]){
+extend type Mutation{
     createDevice(input: CreateDevice @spread): Device!
     updateDevice(input: UpdateDevice @spread): Device!
     removeDevice(id: ID!): Device! @delete

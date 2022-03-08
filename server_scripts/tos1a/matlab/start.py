@@ -32,7 +32,6 @@ def getArguments():
 
 def app(args):
 	logfun = logging.getLogger("logfun")
-	logfun.debug("Inside f!")
 
 	matlabInstance = None
 
@@ -92,33 +91,34 @@ def app(args):
 			matlabInstance.workspace[key] = float(value)
 			isFloat = True;
 		except Exception as ex:
-			logfun.exception(ex)
+			print('TEST:' , ex)
+			# logfun.exception(ex)
 
 		if not isFloat and '[' in value:
 			try:
 				logfun.debug('assignin("base", "' + key + '", eval("' + value + '"))')
 				matlabInstance.eval('assignin("base", "' + key + '", eval("' + value + '"))', nargout=0)
 			except Exception as ex:
-				logfun.exception(ex)
+				print('TEST:' , ex)
+				# logfun.exception(ex)
 
 
 
 	#matlabInstance.eval('assignin("base", "vystupy", eval("'+ vystupy + '"))', nargout=0)
 
-	os.chdir("/var/www/olm_experiment_api/server_scripts/tos1a/matlab/")
-	matlabInstance.addpath("/var/www/olm_experiment_api/server_scripts/tos1a/matlab/")
-	matlabInstance.load_system("thermo_openloop_v2.slx",nargout=0)
+	os.chdir(args["uploaded_file"])
+	matlabInstance.addpath(args["uploaded_file"])
+	matlabInstance.load_system(args["file_name"]+".slx",nargout=0)
 	try:
-		matlabInstance.set_param("thermo_openloop_v2",'SimulationCommand','start',nargout=0)
+		matlabInstance.set_param(args["file_name"],'SimulationCommand','start',nargout=0)
 
 	except Exception as ex:
 		logfun.exception("Something awful happened!")
 
-	while matlabInstance.get_param("thermo_openloop_v2",'SimulationStatus') != 'stopped':
+	while matlabInstance.get_param(args["file_name"],'SimulationStatus') != 'stopped':
 	    pass
 	matlabInstance.quit()
 
 if __name__ == '__main__':
    args = getArguments()
    app(args)
-#    subprocess.call(['sh', './testScript.sh'])

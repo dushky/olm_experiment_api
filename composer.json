@@ -10,6 +10,7 @@
         "daniel-de-wit/lighthouse-sanctum": "^1.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "joselfonseca/lighthouse-graphql-passport-auth": "^6.0",
         "laravel/framework": "^8.65",
         "laravel/sanctum": "^2.12",
         "laravel/tinker": "^2.5",

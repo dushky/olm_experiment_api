@@ -44,7 +44,7 @@ return [
          * The `prefix` and `domain` configuration options are optional.
          */
         //'prefix' => '',
-        //'domain' => '',
+        // 'domain' => 'api-exp01.iolab.sk',
     ],
 
     /*
@@ -58,7 +58,7 @@ return [
     |
     */
 
-    'guard' => 'sanctum',
+    // 'guard' => 'sanctum',
 
     /*
     |--------------------------------------------------------------------------

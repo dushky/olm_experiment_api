@@ -36,3 +36,4 @@ machineid
 storage.json
 code.lock
 slprj
+storage/*
