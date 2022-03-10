@@ -30,7 +30,7 @@ return [
             'path' => env('PUSHER_APP_PATH'),
             'capacity' => null,
             'enable_client_messages' => false,
-            'enable_statistics' => true,
+            'enable_statistics' => false,
         ],
     ],
 
@@ -102,7 +102,7 @@ return [
          * Use an DNS resolver to make the requests to the statistics logger
          * default is to resolve everything to 127.0.0.1.
          */
-        'perform_dns_lookup' => false,
+        'perform_dns_lookup' => true,
     ],
 
     /*
@@ -117,17 +117,20 @@ return [
          * in a separate file specified by local_pk.
          */
         'local_cert' => env('LARAVEL_WEBSOCKETS_SSL_LOCAL_CERT', null),
+        // 'local_cert' => '/var/www/api.olm-experiment.fei.stuba.sk/public/iolab_sk.pem',
 
         /*
          * Path to local private key file on filesystem in case of separate files for
          * certificate (local_cert) and private key.
          */
         'local_pk' => env('LARAVEL_WEBSOCKETS_SSL_LOCAL_PK', null),
-
+        // 'local_pk' => '/var/www/api.olm-experiment.fei.stuba.sk/public/www.iolab.sk.key',
         /*
          * Passphrase for your local_cert file.
          */
         'passphrase' => env('LARAVEL_WEBSOCKETS_SSL_PASSPHRASE', null),
+        'verify_peer' => false,
+        // 'allow_self_signed' => true
     ],
 
     /*

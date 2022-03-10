@@ -40,8 +40,12 @@ return [
                 'encrypted' => true,
                 'host' => '147.175.105.186',
                 'port' => 6001,
-                'scheme' => 'http',
-                'useTLS' => true
+                'scheme' => 'https',
+                'useTLS' => true,
+                'curl_options' => [
+                    CURLOPT_SSL_VERIFYHOST => 0,
+                    CURLOPT_SSL_VERIFYPEER => 0,
+                ]
             ],
         ],
 

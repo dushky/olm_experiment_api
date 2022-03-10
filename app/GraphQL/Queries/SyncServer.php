@@ -21,6 +21,7 @@ class SyncServer
             $software = $device->software;
 
             $finalSchema[] = [
+                'id' => $device->id,
                 'name' => $device->name,
                 'type' => $deviceType,
                 'output' => $deviceOutput,

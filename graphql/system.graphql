@@ -93,6 +93,7 @@ type SyncServerSoftware {
 }
 
 type SyncServerDevice {
+    id: ID!
     name: String!
     type: String!
     output: [SyncServerOutput]!
@@ -108,18 +109,15 @@ extend type Query {
     SyncServer: SyncServerData!
 }
 
-#extend type Query @guard(with: ["sanctum"]){
-#extend type Mutation @guard(with: ["sanctum"]){
 
-
-extend type Query{
+extend type Query @guard(with: ["api"]){
     devices: [Device!]! @paginate(defaultCount: 10)
     device_types: [DeviceType!]! @paginate(defaultCount: 10)
     software: [Software!]! @paginate(defaultCount: 10)
     getDevice(id: ID! @eq): Device! @find
 }
 
-extend type Mutation{
+extend type Mutation @guard(with: ["api"]){
     createDevice(input: CreateDevice @spread): Device!
     updateDevice(input: UpdateDevice @spread): Device!
     removeDevice(id: ID!): Device! @delete
