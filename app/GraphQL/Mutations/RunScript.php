@@ -19,9 +19,9 @@ class RunScript
      */
     public function __invoke($_, array $args)
     {
-        $fileName = '/home/iolab/Desktop/output.txt';
+        $fileName = storage_path("outputs/". uniqid() .".txt");
         file_put_contents($fileName, "");
-        set_time_limit(100);
+        set_time_limit(200);
         $date = filemtime($fileName);
 
         $device = Device::find($args['runScriptInput']['device']['deviceID']);
@@ -29,22 +29,25 @@ class RunScript
         $software = $args['runScriptInput']['device']['software'];
         $scriptName = $args['runScriptInput']['scriptName'];
         $path = base_path()."/server_scripts/$deviceName/$software/$scriptName.py";
-        $args['runScriptInput']['fileName'] = "D6223";
-        $args['runScriptInput']['inputParameter'] = $args['runScriptInput']['inputParameter'] . ",uploaded_file:". storage_path('tmp/uploads/') . ",file_name:".$args['runScriptInput']['fileName'];
+        $schemaFileName = explode(".", $args['runScriptInput']['fileName']); //[0] = "M623c26c7e43d3";
+        $args['runScriptInput']['inputParameter'] = $args['runScriptInput']['inputParameter'] . ",uploaded_file:". storage_path('tmp/uploads/') . ",file_name:". $schemaFileName[0];
         
         $experiment = ExperimentLog::create([
             'device_id' => $device->id,
             'input_arguments' => $args['runScriptInput']['inputParameter'],
             'output_path' => $fileName,
+            'software_name' => $software,
             'process_pid' => '',
             'started_at' => date("Y-m-d H:i:s")
         ]);
 
+        $readingProcess = new StartReadingProcess($date, $fileName, $path, $device, $args, $experiment, $deviceName);
+        dispatch($readingProcess)->onQueue("Reading");
         
-        // return ['output' => $args['runScriptInput']['inputParameter']];
-        $readingProcess = new StartReadingProcess($date, $fileName, $path, $device, $args, $experiment);
-        dispatch($readingProcess);
-        
-        return ['output' => 'success'];
+        return [
+            'status' => 'success', 
+            'experimentID' => $experiment->id,
+            'errorMessage' => ''
+        ];
     }
 }

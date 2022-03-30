@@ -19,6 +19,18 @@ class StopScript
         $device = Device::find($args['runScriptInput']['device']['deviceID']);
         $deviceName = $args['runScriptInput']['device']['deviceName'];
 
+        $experimentID = $args['runScriptInput']['experimentID'];
+
+        $experiment = ExperimentLog::find($experimentID);
+
+        if (!posix_getpgid($experiment->process_pid)) {
+            return [
+                'status' => 'error',
+                'experimentID' => $experimentID,
+                'errorMessage' => "Experiment is finished!"
+            ];
+        }
+
         $process = new Process([
             "./../server_scripts/$deviceName/stop.py",
             '--port', $device->port
@@ -28,8 +40,6 @@ class StopScript
         sleep(1);
         broadcast(null);
 
-        $experiment = ExperimentLog::where('device_id', $device->id)->orderBy('id', 'DESC')->first();
-        // dd($experiment);
         $pid = $experiment->process_pid;
         $allProcesses = $this->getAllChildProcesses($pid);
         $allPids = array_merge([$pid], $allProcesses);
@@ -42,21 +52,27 @@ class StopScript
             $killProcess = new Process([
                 "kill","-9","$killpid"
             ]);
-            // exec("kill -9 $killpid", $result);
-
+            
             $killProcess->start();
             sleep(1);
-            Log::channel('server')->info("TIME: " . date("Y-m-d H:i:s"));
-            Log::channel('server')->info("PID: " . $killpid);
-            Log::channel('server')->info("ERROR: " . $killProcess->getErrorOutput());
-            Log::channel('server')->info("OUTPUT: " . $killProcess->getOutput());
-            // $arguments = [
-            //     "-TERM",
-            //     $pid
-            // ];
+            // Log::channel('server')->info("TIME: " . date("Y-m-d H:i:s"));
+            // Log::channel('server')->info("PID: " . $killpid);
+            // Log::channel('server')->info("ERROR: " . $killProcess->getErrorOutput());
+            // Log::channel('server')->info("OUTPUT: " . $killProcess->getOutput());
+
+            if ($killProcess->getErrorOutput())
+                return [
+                    'status' => 'error',
+                    'experimentID' => $experimentID,
+                    'errorMessage' => $killProcess->getErrorOutput()
+                ];
         }
 
-
+        return [
+            'status' => 'success',
+            'experimentID' => $experimentID,
+            'errorMessage' => ''
+        ];
     }
 
 

@@ -17,6 +17,7 @@ class ExperimentLog extends Model
         'input_arguments',
         'output_path',
         'process_pid',
+        'software_name',
         'started_at',
         'finished_at',
         'timedout_at',

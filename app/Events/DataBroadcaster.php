@@ -13,21 +13,40 @@ use Illuminate\Queue\SerializesModels;
 class DataBroadcaster implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    private array $arrayData;
+    private array | null $arrayData;
+    private string $deviceName;
+    private string | null $error;
+    private bool $isFinished;
+    public $broadcastQueue = 'broadcast-queue';
+
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(array $arrayData)
+    public function __construct(array | null $arrayData, string $deviceName, string | null $error, bool $isFinished)
     {
         $this->arrayData = $arrayData;
+        $this->deviceName = $deviceName;
+        $this->error = $error;
+        $this->isFinished = $isFinished;
     }
 
     public function broadcastWith() {
-        return [
-            'hello' => $this->arrayData
-        ];
+        if ($this->isFinished) {
+            return [
+                'finished' => true
+            ];
+        } else {
+            if ($this->error) {
+                return [
+                    'error' => $this->error
+                ];
+            } else 
+                return [
+                    'data' => $this->arrayData
+                ];
+        }
     }
 
     /**
@@ -37,6 +56,6 @@ class DataBroadcaster implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('channel');
+        return new Channel($this->deviceName);
     }
 }

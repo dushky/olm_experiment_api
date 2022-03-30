@@ -80,18 +80,16 @@ def app(args):
 	matlabInstance.workspace['Umax'] = float(8000)
 	matlabInstance.workspace['Umin'] = float(0)
 
-
-
 	for key, value in args.items():
-		isFloat = False;
+		isFloat = False
 		logfun.debug(key)
 		logfun.debug(value)
 		try:
 			#logfun.debug('assignin("base", "' + key + '", eval("' + value + '"))')
 			matlabInstance.workspace[key] = float(value)
-			isFloat = True;
+			isFloat = True
 		except Exception as ex:
-			print('TEST:' , ex)
+			print()
 			# logfun.exception(ex)
 
 		if not isFloat and '[' in value:
@@ -99,7 +97,7 @@ def app(args):
 				logfun.debug('assignin("base", "' + key + '", eval("' + value + '"))')
 				matlabInstance.eval('assignin("base", "' + key + '", eval("' + value + '"))', nargout=0)
 			except Exception as ex:
-				print('TEST:' , ex)
+				print()
 				# logfun.exception(ex)
 
 
@@ -109,11 +107,16 @@ def app(args):
 	os.chdir(args["uploaded_file"])
 	matlabInstance.addpath(args["uploaded_file"])
 	matlabInstance.load_system(args["file_name"]+".slx",nargout=0)
+
+	try:
+		matlabInstance.eval("assignin(" + args["file_name"] + ",'SimulationCommand','start')", nargout=0)
+	except Exception as ex:
+		print("EXCEPTION: ", ex)
+		
 	try:
 		matlabInstance.set_param(args["file_name"],'SimulationCommand','start',nargout=0)
-
 	except Exception as ex:
-		logfun.exception("Something awful happened!")
+		print("EXCEPTION: ", ex)
 
 	while matlabInstance.get_param(args["file_name"],'SimulationStatus') != 'stopped':
 	    pass

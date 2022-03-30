@@ -9,10 +9,23 @@ scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 "A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
 scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 
-type Query @guard(with: ["api"]) {
+type Query {
     users: [User!]! @paginate(defaultCount: 10)
     user(id: ID @eq): User @find
+    experimentDetails(experimentID: ID): ExperimentDetail
     me: User @auth
+}
+
+
+enum ExperimentStatus {
+    """running"""
+    running
+
+    """finished"""
+    finished
+
+    """failed"""
+    failed
 }
 
 type Mutation {
@@ -44,6 +57,7 @@ input RunScriptInput {
     inputParameter: String
     fileName: String
     device: DeviceConfig
+    experimentID: ID
 }
 
 input DeviceConfig {
@@ -57,10 +71,23 @@ type RunScriptType {
 }
 
 type OutputScript {
-    output: String
+    status: String
+    experimentID: ID!
+    errorMessage: String!
+}
+
+type ArrayOfData {
+    name: String!
+    data: [Float]!
+}
+
+type ExperimentDetail {
+    url: String
+    status: ExperimentStatus
+    values: [ArrayOfData]!
 }
 
 input UpdateUser {
-    id: ID!,
+    id: ID!
     name: String!
 }

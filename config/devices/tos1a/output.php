@@ -2,6 +2,10 @@
 
 return [
 	[
+		"name" => "time",
+		"title" => "Timestamp"
+	],
+	[
 		"name"  => "temp_chip",
 		"title" => "Chip temp"
 	],
@@ -60,13 +64,25 @@ return [
 	[
 		"name"  => "d_rmp",
 		"title" => "Fan derived rpm"
-    ],
-    [
-        "name" => "test1",
-        "title" => "Description test1"
-    ],
-    [
-        "name" => "test2",
-        "title" => "Description test2"
-    ]
+	],
+	[
+		"name"  => "u_lamp",
+		"title" => "Lamp control signal"
+	],
+	[
+		"name"  => "u_led",
+		"title" => "LED control signal"
+	],
+	[
+		"name"  => "u_fan",
+		"title" => "Fan control signal"
+	],
+	[
+		"name"  => "test1",
+		"title" => "test1"
+	],
+	[
+		"name"  => "test2",
+		"title" => "test2"
+	]
 ];

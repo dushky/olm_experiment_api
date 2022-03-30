@@ -19,7 +19,20 @@ class ChangeScript
         $device = Device::find($args['runScriptInput']['device']['deviceID']);
         $deviceName = $args['runScriptInput']['device']['deviceName'];
         $software = $args['runScriptInput']['device']['software'];
+        $experimentID = $args['runScriptInput']['experimentID'];
+
+        $experiment = ExperimentLog::find($experimentID);
+
+        if (!posix_getpgid($experiment->process_pid)) {
+            return [
+                'status' => 'error',
+                'experimentID' => $experimentID,
+                'errorMessage' => "Experiment is finished!"
+            ];
+        }
+
         $path = "../server_scripts/$deviceName/$software/change.py";
+
 
         $process = new Process([
             "./$path",
@@ -30,7 +43,18 @@ class ChangeScript
         $process->start();
         sleep(1);
 
-        Log::channel('server')->info("CHANGESCRIPT: " . $process->getOutput());
-        Log::channel('server')->info("CHANGESCRIPTERROR: " . $process->getErrorOutput());
+
+        if ($process->getErrorOutput())
+            return [
+                'status' => 'error',
+                'experimentID' => $experimentID,
+                'errorMessage' => $process->getErrorOutput()
+            ];
+        else 
+            return [
+                'status' => 'success',
+                'experimentID' => $experimentID,
+                'errorMessage' => ''
+            ];
     }
 }

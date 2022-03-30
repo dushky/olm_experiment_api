@@ -6,6 +6,7 @@ import sys
 import os
 import calendar
 
+current_milli_time = lambda: int(round(time.time() * 1000))
 
 def calcCrc( msg ):
         "Vypocet checksumu"
@@ -47,31 +48,36 @@ def startReading(args):
     ser = serial.Serial(port, 115200)
     readCmd = makeCommand('SGV')
     filePath = args["output"]
-    now = calendar.timegm(time.gmtime())
-    end = now + int(float(args["t_sim"]))
-    readTimes = 0
+#    now = calendar.timegm(time.gmtime())
+#    now = current_milli_time()
+    start = current_milli_time()
+#    end = now + int(float(args["t_sim"])) * 1000
+    elapsedTime = 0
+    count = 0
+    duration = int(float(args["t_sim"])) * 1000
+    rate = float(args["s_rate"])
 
     try:
-        while (now < end):
+        while (elapsedTime < duration):
             file = open(filePath, "a+")
             ser.write(makeCommand("SGV"))
             output = ser.readline()
-
             try :
                 output = output.decode("utf-8")
                 beginPos = output.find("$") + 1
                 endPos = output.find("*")
-                output = output[beginPos:endPos] + "\n"
-                print(output)
+                elapsedTime = current_milli_time() - start
+                output = str(elapsedTime) + "," + output[beginPos:endPos] + "," + args["c_lamp"] + "," + args["c_led"] + "," + args["c_fan"] + "\n"
+#                print(output)
             except ValueError:
                 # How to handle such thing ?
                 print("ops")
 
             file.write(output)
-            now = calendar.timegm(time.gmtime())
-            time.sleep(float(args["s_rate"])/1000.0);
             file.close()
-            readTimes = readTimes + 1
+            count = count + 1
+            time.sleep((-current_milli_time() + start + count*rate)/1000.0)
+#            now = current_milli_time()
         file.close()
         ser.close()
     except Exception as e:
