@@ -18,8 +18,9 @@ class SyncServer
         foreach($devices as $device) {
             $deviceType = $device->deviceType->name;
             $deviceOutput = config("devices.$deviceType.output");
+            // dd($deviceOutput);
             $software = $device->software;
-
+            
             $finalSchema[] = [
                 'id' => $device->id,
                 'name' => $device->name,
@@ -38,6 +39,7 @@ class SyncServer
 
     private function getCommands(string $deviceType, string $softName): array  {
         $inputCommands = config("devices.$deviceType.$softName.input");
+
         $keys = array_keys($inputCommands);
         $commands = [];
         foreach($keys as $key) {
@@ -53,7 +55,7 @@ class SyncServer
         $softSchema = [];
         foreach($software as $soft) {
             $softName = $soft->name;
-
+            
             $softSchema[] = [
                 'name' => $softName,
                 'has_schema' => $softName != "openloop",

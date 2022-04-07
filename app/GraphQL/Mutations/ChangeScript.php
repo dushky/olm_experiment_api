@@ -1,9 +1,11 @@
 <?php
 
 namespace App\GraphQL\Mutations;
+use App\Events\DataBroadcaster;
 use App\Models\Device;
 use App\Models\ExperimentLog;
 use Symfony\Component\Process\Process;
+use App\Helpers\Helpers;
 use Illuminate\Support\Facades\Log;
 
 
@@ -20,7 +22,7 @@ class ChangeScript
         $deviceName = $args['runScriptInput']['device']['deviceName'];
         $software = $args['runScriptInput']['device']['software'];
         $experimentID = $args['runScriptInput']['experimentID'];
-
+        $scriptName = $args['runScriptInput']['scriptName'];
         $experiment = ExperimentLog::find($experimentID);
 
         if (!posix_getpgid($experiment->process_pid)) {
@@ -31,8 +33,12 @@ class ChangeScript
             ];
         }
 
-        $path = "../server_scripts/$deviceName/$software/change.py";
-
+        $scriptFileName = Helpers::getScriptName($scriptName, base_path()."/server_scripts/$deviceName/$software");
+        if ($scriptFileName == null) {
+            broadcast(new DataBroadcaster(null, $device->name, "No such script or file in directory", false));
+            return;
+        }
+        $path = "../server_scripts/$deviceName/$software/".$scriptFileName;
 
         $process = new Process([
             "./$path",
@@ -42,7 +48,6 @@ class ChangeScript
 
         $process->start();
         sleep(1);
-
 
         if ($process->getErrorOutput())
             return [

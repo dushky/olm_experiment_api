@@ -14,6 +14,7 @@ use App\Models\Device;
 use Illuminate\Support\Facades\Log;
 use App\Events\DataBroadcaster;
 use App\Events\IsFinishedBroadcaster;
+use Symfony\Component\Process\InputStream;
 
 class StartReadingProcess implements ShouldQueue
 {
@@ -59,18 +60,16 @@ class StartReadingProcess implements ShouldQueue
             '--output', $this->fileName,
             '--input', $this->args['runScriptInput']['inputParameter']
         ]);
-
+        
         $process->start();
         sleep(1);
         $output = config("devices.".$this->deviceType.".output");
         
-        // Log::channel('server')->error("SKAPALO?: " . $process->getErrorOutput());
         if ($process->getPid() != null) {
             $this->experiment->update([
                 'process_pid' => $process->getPid()
             ]);
         } else {
-            // Log::channel('server')->error("SKAPALO?: " . $process->getErrorOutput());
             broadcast(new DataBroadcaster(null, $this->device->name, $process->getErrorOutput(), false));
             $this->experiment->update([
                 'timedout_at' => date("Y-m-d H:i:s")
@@ -115,7 +114,6 @@ class StartReadingProcess implements ShouldQueue
             broadcast(new DataBroadcaster($dataToBroadcast, $this->device->name, null, false));
             broadcast(new DataBroadcaster($dataToBroadcast, $this->device->name, null, true));
         } else {
-            Log::channel('server')->error("SKAPALO AZ NA KONCI?: " . $process->getErrorOutput());
             broadcast(new DataBroadcaster(null, $this->device->name, $process->getErrorOutput(), false));
             broadcast(new DataBroadcaster(null, $this->device->name, $process->getErrorOutput(), true));
             broadcast(null);

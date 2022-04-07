@@ -6,9 +6,9 @@ use App\Events\DataBroadcaster;
 use App\Models\Device;
 use App\Models\ExperimentLog;
 use App\Jobs\StartReadingProcess;
-use Symfony\Component\Process\Process;
-
-use Illuminate\Support\Facades\Log;
+use App\Helpers\Helpers;
+// use Symfony\Component\Process\Process;
+// use Illuminate\Support\Facades\Log;
 
 
 class RunScript
@@ -28,7 +28,12 @@ class RunScript
         $deviceName = $args['runScriptInput']['device']['deviceName'];
         $software = $args['runScriptInput']['device']['software'];
         $scriptName = $args['runScriptInput']['scriptName'];
-        $path = base_path()."/server_scripts/$deviceName/$software/$scriptName.py";
+        $scriptFileName = Helpers::getScriptName($scriptName, base_path()."/server_scripts/$deviceName/$software");
+        if ($scriptFileName == null) {
+            broadcast(new DataBroadcaster(null, $device->name, "No such script or file in directory", false));
+            return;
+        }
+        $path = base_path()."/server_scripts/$deviceName/$software/".$scriptFileName;
         $schemaFileName = explode(".", $args['runScriptInput']['fileName']); //[0] = "M623c26c7e43d3";
         $args['runScriptInput']['inputParameter'] = $args['runScriptInput']['inputParameter'] . ",uploaded_file:". storage_path('tmp/uploads/') . ",file_name:". $schemaFileName[0];
         
@@ -40,7 +45,7 @@ class RunScript
             'process_pid' => '',
             'started_at' => date("Y-m-d H:i:s")
         ]);
-
+        
         $readingProcess = new StartReadingProcess($date, $fileName, $path, $device, $args, $experiment, $deviceName);
         dispatch($readingProcess)->onQueue("Reading");
         

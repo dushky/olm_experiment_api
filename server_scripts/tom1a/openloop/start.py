@@ -6,7 +6,7 @@ import sys
 import os
 import calendar
 
-current_milli_time = lambda: int(round(time.time() * 1000))
+current_milli_time = lambda: int(round(time.time()))
 
 def calcCrc( msg ):
         "Vypocet checksumu"
@@ -54,7 +54,7 @@ def startReading(args):
 #    end = now + int(float(args["t_sim"])) * 1000
     elapsedTime = 0
     count = 0
-    duration = int(float(args["t_sim"])) * 1000
+    duration = int(float(args["t_sim"]))
     rate = float(args["s_rate"])
 
     try:
@@ -67,7 +67,13 @@ def startReading(args):
                 beginPos = output.find("$") + 1
                 endPos = output.find("*")
                 elapsedTime = current_milli_time() - start
+                print("output[beginPos:endPos]: ", output[beginPos:endPos])
                 output = str(elapsedTime) + "," + output[beginPos:endPos] + "," + args["c_lamp"] + "," + args["c_led"] + "," + args["c_fan"] + "\n"
+                print("c_lamp: ", args["c_lamp"])
+                print("c_led: ", args["c_led"])
+                print("c_fan: ", args["c_fan"])
+                print("output: ", output)
+                print("==========================================")
 #                print(output)
             except ValueError:
                 # How to handle such thing ?
@@ -76,7 +82,7 @@ def startReading(args):
             file.write(output)
             file.close()
             count = count + 1
-            time.sleep((-current_milli_time() + start + count*rate)/1000.0)
+            time.sleep((-current_milli_time() + start + count*rate) / 1000.0)
 #            now = current_milli_time()
         file.close()
         ser.close()
