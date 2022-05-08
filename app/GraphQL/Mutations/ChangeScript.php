@@ -24,7 +24,7 @@ class ChangeScript
         $experimentID = $args['runScriptInput']['experimentID'];
         $scriptName = $args['runScriptInput']['scriptName'];
         $experiment = ExperimentLog::find($experimentID);
-
+        
         if (!posix_getpgid($experiment->process_pid)) {
             return [
                 'status' => 'error',
@@ -40,6 +40,12 @@ class ChangeScript
         }
         $path = "../server_scripts/$deviceName/$software/".$scriptFileName;
 
+        if ($software != "openloop") {
+            $schemaFileName = explode(".", $experiment->schema_name);
+            $args['runScriptInput']['inputParameter'] = $args['runScriptInput']['inputParameter'] . ",file_name:". $schemaFileName[0];
+        }
+        // Log::channel('server')->info("CHANGE");
+
         $process = new Process([
             "./$path",
             '--port', $device->port,
@@ -48,6 +54,9 @@ class ChangeScript
 
         $process->start();
         sleep(1);
+
+        Log::channel('server')->info("CHANGE: " . $process->getOutput());
+        Log::channel('server')->info("CHANGE: " . $process->getErrorOutput());
 
         if ($process->getErrorOutput())
             return [

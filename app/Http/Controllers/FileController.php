@@ -36,6 +36,8 @@ class FileController extends Controller
     }
 
     public function download(Request $request, $id) {
+        ini_set('memory_limit','5000000M');
+        set_time_limit(0);
         $experiment = ExperimentLog::find($id);
         $device = Device::find($experiment->device_id);
         $deviceType = $device->deviceType->name;
@@ -44,6 +46,9 @@ class FileController extends Controller
         foreach($output as $outputType) {
             array_push($header, $outputType['name']);
         }
+
+        $fp = fopen('file.csv', 'w');
+
         $data = file_get_contents(
             $experiment->output_path,
             false,
@@ -58,6 +63,7 @@ class FileController extends Controller
             $line = explode(",", $line);
                 fputcsv($fp, $line);
         }
+
         fclose($fp);
         
         return response()->download('file.csv', "experimentOutput.csv");

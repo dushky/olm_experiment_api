@@ -61,9 +61,22 @@ class ExperimentDetails
             }
         }
 
+        $header = [];
+        foreach($output as $outputType) {
+            array_push($header, $outputType['title']);
+        }
+        $fp = fopen(storage_path("/app/public/$experiment->id.csv"), 'w');
+        fputcsv($fp, $header);
+        foreach($split as $line) {
+            $line = explode(",", $line);
+                fputcsv($fp, $line);
+        }
+        fclose($fp);
+
+
         $array = $this->createReturnArray($dataToBroadcast);
         $returnArray = [
-            "url" => url("/api/experimentDetail/".$experiment->id),
+            "url" => url('/storage/'.$experiment->id.'.csv'),
             'status' => $status,
             "values" => $array
         ];

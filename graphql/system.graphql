@@ -75,6 +75,11 @@ type SyncServerOutput {
     title: String!
 }
 
+type SyncServerSelectOptions {
+    name: String!
+    value: Int!
+}
+
 type SyncServerInput {
     name: String
     rules: String
@@ -83,6 +88,7 @@ type SyncServerInput {
     type: String
     row: Int!
     order: Int!
+    options: [SyncServerSelectOptions]
 }
 
 type SyncServerCommand {

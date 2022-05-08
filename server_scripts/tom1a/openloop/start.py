@@ -67,13 +67,13 @@ def startReading(args):
                 beginPos = output.find("$") + 1
                 endPos = output.find("*")
                 elapsedTime = current_milli_time() - start
-                print("output[beginPos:endPos]: ", output[beginPos:endPos])
+                # print("output[beginPos:endPos]: ", output[beginPos:endPos])
                 output = str(elapsedTime) + "," + output[beginPos:endPos] + "," + args["c_lamp"] + "," + args["c_led"] + "," + args["c_fan"] + "\n"
-                print("c_lamp: ", args["c_lamp"])
-                print("c_led: ", args["c_led"])
-                print("c_fan: ", args["c_fan"])
-                print("output: ", output)
-                print("==========================================")
+                # print("c_lamp: ", args["c_lamp"])
+                # print("c_led: ", args["c_led"])
+                # print("c_fan: ", args["c_fan"])
+                # print("output: ", output)
+                # print("==========================================")
 #                print(output)
             except ValueError:
                 # How to handle such thing ?

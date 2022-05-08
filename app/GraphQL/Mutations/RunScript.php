@@ -7,8 +7,7 @@ use App\Models\Device;
 use App\Models\ExperimentLog;
 use App\Jobs\StartReadingProcess;
 use App\Helpers\Helpers;
-// use Symfony\Component\Process\Process;
-// use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log;
 
 
 class RunScript
@@ -33,19 +32,24 @@ class RunScript
             broadcast(new DataBroadcaster(null, $device->name, "No such script or file in directory", false));
             return;
         }
+        Log::channel('server')->error("ERRORMESSAGE");
+        Log::channel('server')->error("ERRORMESSAGE: " . $args['runScriptInput']['inputParameter']);
+        // dd();
         $path = base_path()."/server_scripts/$deviceName/$software/".$scriptFileName;
-        $schemaFileName = explode(".", $args['runScriptInput']['fileName']); //[0] = "M623c26c7e43d3";
+        $schemaFileName = explode(".", $args['runScriptInput']['fileName']);
+        // $schemaFileName[0] = "thermo_openloop_v2";
         $args['runScriptInput']['inputParameter'] = $args['runScriptInput']['inputParameter'] . ",uploaded_file:". storage_path('tmp/uploads/') . ",file_name:". $schemaFileName[0];
-        
+
         $experiment = ExperimentLog::create([
             'device_id' => $device->id,
             'input_arguments' => $args['runScriptInput']['inputParameter'],
             'output_path' => $fileName,
             'software_name' => $software,
+            'schema_name' => $args['runScriptInput']['fileName'],
             'process_pid' => '',
             'started_at' => date("Y-m-d H:i:s")
         ]);
-        
+
         $readingProcess = new StartReadingProcess($date, $fileName, $path, $device, $args, $experiment, $deviceName);
         dispatch($readingProcess)->onQueue("Reading");
         

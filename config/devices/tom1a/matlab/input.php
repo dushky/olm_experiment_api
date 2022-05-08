@@ -44,7 +44,7 @@ return [
 			"title"	=>	"Regulačná veličina",
 			"placeholder"	=>	1,
 			"type"	=>	"select",
-			"values" => [
+			"options" => [
 				[
 					"name" => "Ziarovka",
 					"value" => 1
@@ -57,7 +57,9 @@ return [
 					"name" => "LED",
 					"value" => 3
 				]
-			]
+			],
+			"row" => 2,
+			"order" => 4
 		],
 		[
 			"name"	=>	"reg_output",

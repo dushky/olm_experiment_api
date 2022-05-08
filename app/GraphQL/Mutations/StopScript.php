@@ -31,9 +31,13 @@ class StopScript
             ];
         }
 
+        $schema_name = explode(".",$experiment->schema_name)[0];
+
         $process = new Process([
             "./../server_scripts/$deviceName/stop.py",
-            '--port', $device->port
+            '--port', $device->port,
+            '--software', $experiment->software_name,
+            '--fileName', $schema_name
         ]);
 
         $process->start();
@@ -55,10 +59,6 @@ class StopScript
             
             $killProcess->start();
             sleep(1);
-            // Log::channel('server')->info("TIME: " . date("Y-m-d H:i:s"));
-            // Log::channel('server')->info("PID: " . $killpid);
-            // Log::channel('server')->info("ERROR: " . $killProcess->getErrorOutput());
-            // Log::channel('server')->info("OUTPUT: " . $killProcess->getOutput());
 
             if ($killProcess->getErrorOutput())
                 return [

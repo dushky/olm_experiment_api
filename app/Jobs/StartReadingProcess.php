@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -13,8 +12,7 @@ use App\Models\ExperimentLog;
 use App\Models\Device;
 use Illuminate\Support\Facades\Log;
 use App\Events\DataBroadcaster;
-use App\Events\IsFinishedBroadcaster;
-use Symfony\Component\Process\InputStream;
+use App\Helpers\Helpers;
 
 class StartReadingProcess implements ShouldQueue
 {
@@ -52,6 +50,31 @@ class StartReadingProcess implements ShouldQueue
      */
     public function handle()
     {
+        // CHECK INIT
+        if (Helpers::checkIfInitIsAvailable(base_path()."/server_scripts/$this->deviceType")) {
+            $initFile = Helpers::getScriptName("init", base_path()."/server_scripts/$this->deviceType");
+            
+            if ($initFile == null) {
+                broadcast(new DataBroadcaster(null, $this->device->name, "No such script or file in directory", false));
+                return;
+            }
+
+            $process = new Process([
+                base_path()."/server_scripts/$this->deviceTypee/".$initFile,
+            ]);
+
+            $process->start();
+
+            sleep(1);
+
+            if ($process->getPid() == null) {
+                broadcast(new DataBroadcaster(null, $this->device->name, $process->getErrorOutput(), false));
+            }
+
+            $process->wait();
+        }
+
+
         $lastDataLength = 0;
 
         $process = new Process([
@@ -138,8 +161,14 @@ class StartReadingProcess implements ShouldQueue
         return -1;
     }
 
+    public function failed() {
+        $this->experiment->update([
+            'timedout_at' => date("Y-m-d H:i:s")
+        ]);
+        $this->delete();
+    }
 
-    private function formatDataToWebsockets(Array $split, Array $output): Array {
+    private function formatDataToWebsockets(Array $split, Array $output) {
         $dataToBroadcast = [];
         foreach($split as $line) {
             if ($line != "") {
