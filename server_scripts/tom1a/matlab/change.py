@@ -8,7 +8,6 @@ import getpass
 def getArguments():
    parser = argparse.ArgumentParser()
    parser.add_argument("--port")
-#    parser.add_argument("--output")
    parser.add_argument("--input")
    args = parser.parse_args()
    port = args.port
@@ -22,7 +21,7 @@ def getArguments():
    return args_map
 
 def app(args):
-
+	print("LAMP: ")
 	currentDir = os.path.dirname(os.path.abspath(__file__))
 
 	matlabInstance = matlab.engine.connect_matlab(matlab.engine.find_matlab()[0])
@@ -44,10 +43,26 @@ def app(args):
 	print("MATLAB LED: ", matlabInstance.workspace['input_led'])
 	print("MATLAB regRequest: ", matlabInstance.workspace['reg_request'])
 
-	matlabInstance.workspace['input_fan'] = float(inputFan)
-	matlabInstance.workspace['input_lamp'] = float(inputLamp)
-	matlabInstance.workspace['input_led'] = float(inputLed)
-	matlabInstance.workspace['reg_request'] = float(regRequest)
+	# matlabInstance.workspace['input_fan'] = float(inputFan)
+	# matlabInstance.workspace['input_lamp'] = float(inputLamp)
+	# matlabInstance.workspace['input_led'] = float(inputLed)
+	# matlabInstance.workspace['reg_request'] = float(regRequest)
+
+	for key, value in args.items():
+		isFloat = False
+		try:
+			print("KEY: ", key, value)
+			matlabInstance.workspace[key] = float(value)
+			isFloat = True
+		except Exception as ex:
+			print()
+
+		if not isFloat and '[' in value:
+			try:
+				logfun.debug('assignin("base", "' + key + '", eval("' + value + '"))')
+				matlabInstance.eval('assignin("base", "' + key + '", eval("' + value + '"))', nargout=0)
+			except Exception as ex:
+				print()
 
 	print("<=================================>")
 
@@ -63,7 +78,7 @@ def app(args):
 	except Exception as ex:
 		print("EXCEPTION: ", ex)
 
-	matlabInstance.set_param(args["file_name"],'SimulationCommand','update',nargout=0)
+	matlabInstance.set_param(args["file_name"],'SimulationCommand','Update',nargout=0)
 
 	print("MATLAB LAMP: ", matlabInstance.workspace['input_lamp'])
 	print("MATLAB FAN: ", matlabInstance.workspace['input_fan'])

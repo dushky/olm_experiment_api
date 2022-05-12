@@ -44,7 +44,6 @@ class ChangeScript
             $schemaFileName = explode(".", $experiment->schema_name);
             $args['runScriptInput']['inputParameter'] = $args['runScriptInput']['inputParameter'] . ",file_name:". $schemaFileName[0];
         }
-        // Log::channel('server')->info("CHANGE");
 
         $process = new Process([
             "./$path",

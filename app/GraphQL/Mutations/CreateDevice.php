@@ -27,9 +27,10 @@ class CreateDevice
             $software = Software::where('id', $soft)->first();
 
             if (!File::exists(base_path().'/server_scripts/'.$device->deviceType->name.'/'.$software->name)) {
-                File::makeDirectory(base_path().'/server_scripts/'.$device->deviceType->name.'/'.$software->name, 0755, true);
-                File::makeDirectory(base_path().'/config/devices/'.$device->deviceType->name.'/'.$software->name, 0755, true);
-                $this->createInputConfig($device->deviceType->name, $software->name);
+                File::makeDirectory(base_path().'/server_scripts/'.$device->deviceType->name.'/'.$software->name, 0777, true);
+                File::makeDirectory(base_path().'/config/devices/'.$device->deviceType->name.'/'.$software->name, 0777, true);
+                $this->createConfig($device->deviceType->name, $software->name);
+                $this->createLocalConfig($device->deviceType->name, $software->name);
             }
 
         }
@@ -43,9 +44,16 @@ class CreateDevice
 
 
 
-    private function createInputConfig(string $deviceTypeName, string $softwareName): void {
+    private function createConfig(string $deviceTypeName, string $softwareName): void {
         $inputTemplate = "<?php \n \treturn [ \n \t \t'start'  => [], \n \t \t'change'  => [], \n \t \t'stop' => [] \n \t];";
         $file = fopen(base_path().'/config/devices/'.$deviceTypeName.'/'.$softwareName.'/input.php', "w");
+        fwrite($file, $inputTemplate);
+        fclose($file);
+    }
+
+    private function createLocalConfig(string $deviceTypeName, string $softwareName): void {
+        $inputTemplate = "<?php \n \treturn [ \n \t \t'startLocal'  => [], \n \t \t'change'  => [], \n \t \t'stop' => [] \n \t];";
+        $file = fopen(base_path().'/config/devices/'.$deviceTypeName.'/'.$softwareName.'/localInput.php', "w");
         fwrite($file, $inputTemplate);
         fclose($file);
     }

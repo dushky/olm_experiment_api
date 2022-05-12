@@ -3,6 +3,7 @@
 namespace App\GraphQL\Queries;
 
 use GraphQL\Type\Definition\ResolveInfo;
+use Mockery\Undefined;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 use SebastianBergmann\FileIterator\Facade\Config;
 
@@ -23,14 +24,31 @@ class GetConfigByDeviceType
         $deviceType = $configInput['deviceName'];
         $software = $configInput['software'];
 
+        $localInput = config("devices.$deviceType.$software.localInput");
         $items = config("devices.$deviceType.$software.input");
-
-        if ($items) {
+        if ($localInput != null) {
             $keys = array_keys($items);
+            $respArray = [];
+            foreach($keys as $key) {
+                if ($key == "start") {
+                    $respArray['startLocal'] = [...$items[$key], ...$localInput['startLocal']];
+                } else {
+                    $respArray[$key] = [...$items[$key], ...$localInput[$key]];
+                }
+            }
+            $localInput = $respArray;
+        } else {
+            $localInput = $items;
+            $localInput['startLocal'] = $localInput['start'];
+            unset($localInput['start']);
+        }
+
+        if ($localInput) {
+            $keys = array_keys($localInput);
             $respItems = [];
             foreach($keys as $key) {
                 $respItem['scriptName'] = $key;
-                $respItem['items'] = $items[$key];
+                $respItem['items'] = $localInput[$key];
                 array_push($respItems, $respItem);
             }
 

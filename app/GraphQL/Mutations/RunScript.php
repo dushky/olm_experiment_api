@@ -28,18 +28,23 @@ class RunScript
         $software = $args['runScriptInput']['device']['software'];
         $scriptName = $args['runScriptInput']['scriptName'];
         $scriptFileName = Helpers::getScriptName($scriptName, base_path()."/server_scripts/$deviceName/$software");
+        
         if ($scriptFileName == null) {
             broadcast(new DataBroadcaster(null, $device->name, "No such script or file in directory", false));
             return;
         }
-        Log::channel('server')->error("ERRORMESSAGE");
-        Log::channel('server')->error("ERRORMESSAGE: " . $args['runScriptInput']['inputParameter']);
-        // dd();
-        $path = base_path()."/server_scripts/$deviceName/$software/".$scriptFileName;
-        $schemaFileName = explode(".", $args['runScriptInput']['fileName']);
-        // $schemaFileName[0] = "thermo_openloop_v2";
-        $args['runScriptInput']['inputParameter'] = $args['runScriptInput']['inputParameter'] . ",uploaded_file:". storage_path('tmp/uploads/') . ",file_name:". $schemaFileName[0];
 
+        $path = base_path()."/server_scripts/$deviceName/$software/".$scriptFileName;
+        if ($scriptName == "startLocal") {
+            $schemaFileName = explode(".", Helpers::getSchemaNameForLocalStart($scriptName, $software));
+        } else {
+            $schemaFileName = explode(".", $args['runScriptInput']['fileName']);
+        }
+        
+        Log::channel('server')->error("ERRORMESSAGE: " . Helpers::getSchemaNameForLocalStart($scriptName, $software));
+        $args['runScriptInput']['inputParameter'] = $args['runScriptInput']['inputParameter'] . ",uploaded_file:". storage_path('tmp/uploads/') . ",file_name:". $schemaFileName[0];
+        
+        Log::channel('server')->error("ERRORMESSAGE: " . $args['runScriptInput']['inputParameter']);
         $experiment = ExperimentLog::create([
             'device_id' => $device->id,
             'input_arguments' => $args['runScriptInput']['inputParameter'],
