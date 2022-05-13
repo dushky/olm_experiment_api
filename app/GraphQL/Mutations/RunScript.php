@@ -36,12 +36,12 @@ class RunScript
 
         $path = base_path()."/server_scripts/$deviceName/$software/".$scriptFileName;
         if ($scriptName == "startLocal") {
-            $schemaFileName = explode(".", Helpers::getSchemaNameForLocalStart($scriptName, $software));
+            $schemaFileName = explode(".", Helpers::getSchemaNameForLocalStart($software));
         } else {
             $schemaFileName = explode(".", $args['runScriptInput']['fileName']);
         }
         
-        Log::channel('server')->error("ERRORMESSAGE: " . Helpers::getSchemaNameForLocalStart($scriptName, $software));
+        // Log::channel('server')->error("ERRORMESSAGE: " . Helpers::getSchemaNameForLocalStart($software));
         $args['runScriptInput']['inputParameter'] = $args['runScriptInput']['inputParameter'] . ",uploaded_file:". storage_path('tmp/uploads/') . ",file_name:". $schemaFileName[0];
         
         Log::channel('server')->error("ERRORMESSAGE: " . $args['runScriptInput']['inputParameter']);

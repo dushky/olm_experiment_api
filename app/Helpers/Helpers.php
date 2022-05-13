@@ -33,12 +33,11 @@ class Helpers
 
 
     // In case of testing in other simulation software add another case with schema name
-    public static function getSchemaNameForLocalStart(string $scriptName, string $software): string | null {
+    public static function getSchemaNameForLocalStart(string $software): string | null {
         switch($software) {
             case 'matlab': 
-                if ($scriptName == 'startLocal')
-                    return "SARADRC1.slx";
-                    break;
+                return "SARADRC1.slx";
+                break;
             default:
                 return null;
         }
