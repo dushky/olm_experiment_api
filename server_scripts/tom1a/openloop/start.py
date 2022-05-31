@@ -6,7 +6,7 @@ import sys
 import os
 import calendar
 
-current_milli_time = lambda: int(round(time.time()))
+current_milli_time = lambda: time.time()
 
 def calcCrc( msg ):
         "Vypocet checksumu"
@@ -82,7 +82,7 @@ def startReading(args):
             file.write(output)
             file.close()
             count = count + 1
-            time.sleep((-current_milli_time() + start + count*rate) / 1000.0)
+            time.sleep((-current_milli_time() + start + rate) / 1000.0)
 #            now = current_milli_time()
         file.close()
         ser.close()

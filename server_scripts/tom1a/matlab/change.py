@@ -1,28 +1,38 @@
 #!/usr/bin/python3
+import logging, logging.handlers
+# Log everything, and send it to stderr.
+import pwd
+
 import matlab.engine
 import os
 import argparse
+import subprocess
 import time
 import getpass
+import subprocess
 
 def getArguments():
    parser = argparse.ArgumentParser()
+   print("HERE")
    parser.add_argument("--port")
    parser.add_argument("--input")
+   print("HERE2")
    args = parser.parse_args()
    port = args.port
    args = args.input
    args = args.split(",")
+   print("HERE3")
    args_map = {}
    for arg in args:
       argument = arg.split(":")
       args_map[argument[0]] = argument[1]
    args_map["port"] = port
+   print(args_map)
    return args_map
 
 def app(args):
 	print("LAMP: ")
-	currentDir = os.path.dirname(os.path.abspath(__file__))
+	# currentDir = os.path.dirname(os.path.abspath(__file__))
 
 	matlabInstance = matlab.engine.connect_matlab(matlab.engine.find_matlab()[0])
 
@@ -57,13 +67,6 @@ def app(args):
 		except Exception as ex:
 			print()
 
-		if not isFloat and '[' in value:
-			try:
-				logfun.debug('assignin("base", "' + key + '", eval("' + value + '"))')
-				matlabInstance.eval('assignin("base", "' + key + '", eval("' + value + '"))', nargout=0)
-			except Exception as ex:
-				print()
-
 	print("<=================================>")
 
 	print("MATLAB LAMP: ", matlabInstance.workspace['input_lamp'])
@@ -73,12 +76,12 @@ def app(args):
 
 	print("<=================================>")
 
-	try:
-		matlabInstance.eval("assignin(" + args["file_name"] + ",'SimulationCommand','update')", nargout=0)
-	except Exception as ex:
-		print("EXCEPTION: ", ex)
+	# try:
+	# 	matlabInstance.eval("assignin(" + args["file_name"] + ",'SimulationCommand','Update')", nargout=0)
+	# except Exception as ex:
+	# 	print("EXCEPTION: ", ex)
 
-	matlabInstance.set_param(args["file_name"],'SimulationCommand','Update',nargout=0)
+	matlabInstance.set_param(args["file_name"],'SimulationCommand','update',nargout=0)
 
 	print("MATLAB LAMP: ", matlabInstance.workspace['input_lamp'])
 	print("MATLAB FAN: ", matlabInstance.workspace['input_fan'])

@@ -50,7 +50,7 @@ class RunScript
             'input_arguments' => $args['runScriptInput']['inputParameter'],
             'output_path' => $fileName,
             'software_name' => $software,
-            'schema_name' => $args['runScriptInput']['fileName'],
+            'schema_name' => $schemaFileName[0],
             'process_pid' => '',
             'started_at' => date("Y-m-d H:i:s")
         ]);

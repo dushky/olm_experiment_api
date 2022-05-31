@@ -42,8 +42,13 @@ class ChangeScript
 
         if ($software != "openloop") {
             $schemaFileName = explode(".", $experiment->schema_name);
+            Log::channel('server')->info("CHANGE: " . $path);
             $args['runScriptInput']['inputParameter'] = $args['runScriptInput']['inputParameter'] . ",file_name:". $schemaFileName[0];
         }
+
+        Log::channel('server')->info("CHANGE: " . $path);
+        Log::channel('server')->info("CHANGE: " . $device->port);
+        Log::channel('server')->info("CHANGE: " . $args['runScriptInput']['inputParameter']);
 
         $process = new Process([
             "./$path",
@@ -54,6 +59,10 @@ class ChangeScript
         $process->start();
         sleep(1);
 
+        while($process->isRunning()) {
+            Log::channel('server')->info("RUNNING: " . $process->getOutput());
+        }
+        
         Log::channel('server')->info("CHANGE: " . $process->getOutput());
         Log::channel('server')->info("CHANGE: " . $process->getErrorOutput());
 
