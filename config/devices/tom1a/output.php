@@ -11,7 +11,8 @@ return [
 	],
 	[
 		"name"  => "f_temp_int",
-		"title" => "Filtered internal temp"
+		"title" => "Filtered internal temp",
+        "defaultVisibilityFor" => ["openloop"]
 	],
 	[
 		"name"  => "d_temp_int",
@@ -27,7 +28,8 @@ return [
 	],
 	[
 		"name"  => "f_light_int_lin",
-		"title" => "Light filtered lin intensity"
+		"title" => "Light filtered lin intensity",
+        "defaultVisibilityFor" => ["openloop"]
 	],
 	[
 		"name"  => "d_light_int_lin",
@@ -59,7 +61,8 @@ return [
 	],
 	[
 		"name"  => "f_rpm",
-		"title" => "Fan filtered rpm"
+		"title" => "Fan filtered rpm",
+        "defaultVisibilityFor" => ["openloop"]
 	],
 	[
 		"name"  => "d_rmp",
@@ -75,14 +78,17 @@ return [
 	],
 	[
 		"name"  => "u_lamp",
-		"title" => "Lamp control signal"
+		"title" => "Lamp control signal",
+        "defaultVisibilityFor" => ["matlab"]
 	],
 	[
 		"name"  => "u_led",
-		"title" => "LED control signal"
+		"title" => "LED control signal",
+        "defaultVisibilityFor" => ["matlab"]
 	],
 	[
 		"name"  => "u_fan",
-		"title" => "Fan control signal"
+		"title" => "Fan control signal",
+        "defaultVisibilityFor" => ["matlab"]
 	]
 ];

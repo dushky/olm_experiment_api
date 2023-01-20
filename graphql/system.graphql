@@ -73,6 +73,7 @@ input UpdateSoftware {
 type SyncServerOutput {
     name: String!
     title: String!
+    defaultVisibilityFor: [String!]
 }
 
 type SyncServerSelectOptions {

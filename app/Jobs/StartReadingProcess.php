@@ -83,11 +83,11 @@ class StartReadingProcess implements ShouldQueue
             '--output', $this->fileName,
             '--input', $this->args['runScriptInput']['inputParameter']
         ]);
-        
+
         $process->start();
         sleep(1);
         $output = config("devices.".$this->deviceType.".output");
-        
+
         if ($process->getPid() != null) {
             $this->experiment->update([
                 'process_pid' => $process->getPid()
@@ -120,7 +120,7 @@ class StartReadingProcess implements ShouldQueue
                 broadcast(new DataBroadcaster($dataToBroadcast, $this->device->name, null, false));
             }
         };
-        
+
         // Send Last Message with full data
         if (!$process->isRunning() && count($dataToBroadcast) > 0) {
             $data = file_get_contents(
@@ -131,9 +131,9 @@ class StartReadingProcess implements ShouldQueue
             );
             $lastDataLength += strlen($data);
             $split = explode("\n", $data);
-            
+
             $dataToBroadcast = $this->formatDataToWebsockets($split, $output);
-            
+
             broadcast(new DataBroadcaster($dataToBroadcast, $this->device->name, null, false));
             broadcast(new DataBroadcaster($dataToBroadcast, $this->device->name, null, true));
         } else {
@@ -147,7 +147,7 @@ class StartReadingProcess implements ShouldQueue
             $this->experiment->update([
                 'finished_at' => date("Y-m-d H:i:s")
             ]);
-            
+
         Log::channel('server')->error("ERRORMESSAGE: " . $process->getErrorOutput());
         Log::channel('server')->info("PROCESS OUTPUT: " . $process->getOutput());
     }
@@ -178,6 +178,7 @@ class StartReadingProcess implements ShouldQueue
                     if ($index == -1) {
                         array_push($dataToBroadcast, [
                             "name" => $output[$i]['title'],
+                            "defaultVisibilityFor" => $output[$i]['defaultVisibilityFor'] ?? [],
                             "data" => [$splitLine[$i]]
                         ]);
                     } else {
