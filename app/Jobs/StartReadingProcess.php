@@ -53,14 +53,14 @@ class StartReadingProcess implements ShouldQueue
         // CHECK INIT
         if (Helpers::checkIfInitIsAvailable(base_path()."/server_scripts/$this->deviceType")) {
             $initFile = Helpers::getScriptName("init", base_path()."/server_scripts/$this->deviceType");
-            
+
             if ($initFile == null) {
                 broadcast(new DataBroadcaster(null, $this->device->name, "No such script or file in directory", false));
                 return;
             }
 
             $process = new Process([
-                base_path()."/server_scripts/$this->deviceTypee/".$initFile,
+                base_path()."/server_scripts/$this->deviceType/".$initFile,
             ]);
 
             $process->start();
