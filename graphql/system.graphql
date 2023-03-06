@@ -24,6 +24,7 @@ type Device {
     deviceType: DeviceType! @belongsTo
     software: [Software!]! @belongsToMany
     port: String!
+    is_reserved: Boolean!
     created_at: DateTime!
     updated_at: DateTime!
 }
@@ -115,8 +116,22 @@ type SyncServerData {
     devices: [SyncServerDevice]!
 }
 
+input DeviceReservationStatusInput {
+    deviceID: ID!
+    isReserved: Boolean!
+}
+
+type UpdateDeviceReservationStatusResult {
+    updatedDevicesCount: Int!
+}
+
 extend type Query {
     SyncServer: SyncServerData!
+}
+
+extend type Mutation {
+    updateDeviceReservationStatus(deviceReservationStatusInput: DeviceReservationStatusInput): UpdateDeviceReservationStatusResult!
+
 }
 
 extend type Query @guard(with: ["api"]) {

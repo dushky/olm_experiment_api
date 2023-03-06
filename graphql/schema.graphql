@@ -33,7 +33,6 @@ type Mutation {
     RunScript(runScriptInput: RunScriptInput): OutputScript
     ChangeScript(runScriptInput: RunScriptInput): OutputScript
     StopScript(runScriptInput: RunScriptInput): OutputScript
-    updateDeviceReservationStatus(deviceReservationStatusInput: DeviceReservationStatusInput): UpdateDeviceReservationStatusResult!
     login(input: LoginInput @spread): AuthPayload! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\Login@resolve")
     refreshToken(input: RefreshTokenInput @spread): RefreshTokenPayload! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\RefreshToken@resolve")
     logout: LogoutResponse! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\Logout@resolve")
@@ -91,13 +90,4 @@ type ExperimentDetail {
 input UpdateUser {
     id: ID!
     name: String!
-}
-
-input DeviceReservationStatusInput {
-    deviceID: ID!
-    isReserved: Boolean!
-}
-
-type UpdateDeviceReservationStatusResult {
-    updatedDevicesCount: Int
 }

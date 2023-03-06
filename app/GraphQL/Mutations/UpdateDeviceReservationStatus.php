@@ -10,7 +10,7 @@ class UpdateDeviceReservationStatus
      * @param null $_
      * @param array<string, mixed> $args
      */
-    public function __invoke($_, array $args)
+    public function __invoke($_, array $args): array
     {
         $reservationStatus = $args['deviceReservationStatusInput'];
         $device = Device::query()->find($reservationStatus["deviceID"]);
@@ -20,12 +20,12 @@ class UpdateDeviceReservationStatus
         }
 
         if (!$device->isDirty()) {
-            return ['updatedDeviceCount' => 0];
+            return ['updatedDevicesCount' => 0];
         }
 
         $device->save();
 
-        return ['updatedDeviceCount' => 1];
+        return ['updatedDevicesCount' => 1];
 
 
     }
