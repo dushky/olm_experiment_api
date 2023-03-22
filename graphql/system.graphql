@@ -125,12 +125,31 @@ type UpdateDeviceReservationStatusResult {
     updatedDevicesCount: Int!
 }
 
+type CameraStatus {
+    isConnected: Boolean!
+    status: String!
+}
+
+type VideoStreamStatus {
+    isRunning: Boolean!
+    status: String
+}
+
+type StopVideoStreamStatus {
+    isStopped: Boolean!
+    status: String!
+}
+
 extend type Query {
     SyncServer: SyncServerData!
+    cameraStatus: CameraStatus!
+    videoStreamStatus: VideoStreamStatus!
 }
 
 extend type Mutation {
     updateDeviceReservationStatus(deviceReservationStatusInput: DeviceReservationStatusInput): UpdateDeviceReservationStatusResult!
+    startVideoStream: VideoStreamStatus!
+    stopVideoStream: StopVideoStreamStatus!
 
 }
 
