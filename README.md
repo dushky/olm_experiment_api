@@ -35,7 +35,7 @@
     ```
     [program:laravel-worker]
     process_name=%(program_name)s_%(process_num)02d
-    command=/usr/bin/php /var/www/api.olm-experiment.fei.stuba.sk/artisan queue:listen --queue=Reading  --sleep=3 --tries=3 --timeout=0
+    command=/usr/bin/php /var/www/"YOUR_APP_FOLDER"/artisan queue:listen --queue=Reading  --sleep=3 --tries=3 --timeout=0
     autostart=true
     autorestart=true
     stopasgroup=true
@@ -43,14 +43,14 @@
     user=iolab
     numprocs=1
     redirect_stderr=true
-    stdout_logfile=/var/www/api.olm-experiment.fei.stuba.sk/storage/logs/worker.log
+    stdout_logfile=/var/www/"YOUR_APP_FOLDER"/storage/logs/worker.log
     stopwaitsecs=3600
     ```
     4. in ```/etc/supervisor/conf.d/``` directory create ```laravel-websockets-worker.conf``` file and paste this:
     ```
     [program:laravel-websockets-worker]
     process_name=%(program_name)s_%(process_num)02d
-    command=/usr/bin/php /var/www/api.olm-experiment.fei.stuba.sk/artisan queue:listen --queue=broadcast-queue  --sleep=3 --tries=3
+    command=/usr/bin/php /var/www/"YOUR_APP_FOLDER"/artisan queue:listen --queue=broadcast-queue  --sleep=3 --tries=3
     autostart=true
     autorestart=true
     stopasgroup=true
@@ -58,14 +58,14 @@
     user=iolab
     numprocs=8
     redirect_stderr=true
-    stdout_logfile=/var/www/api.olm-experiment.fei.stuba.sk/storage/logs/worker.log
+    stdout_logfile=/var/www/"YOUR_APP_FOLDER"/storage/logs/worker.log
     stopwaitsecs=3600
     ```
     5. in ```/etc/supervisor/conf.d/``` directory create ```laravel-websocket.conf``` file and paste this:
     ```
     [program:laravel-websocket]
     process_name=%(program_name)s_%(process_num)02d
-    command=/usr/bin/php /var/www/api.olm-experiment.fei.stuba.sk/artisan websockets:serve
+    command=/usr/bin/php /var/www/"YOUR_APP_FOLDER"/artisan websockets:serve
     autostart=true
     autorestart=true
     stopasgroup=true
@@ -73,7 +73,7 @@
     user=iolab
     numprocs=1
     redirect_stderr=true
-    stdout_logfile=/var/www/api.olm-experiment.fei.stuba.sk/storage/logs/websockets.log
+    stdout_logfile=/var/www/"YOUR_APP_FOLDER"/storage/logs/websockets.log
     stopwaitsecs=3600
     ```
     6. run ```sudo supervisorctl reread``` and ```sudo supervisorctl update```
