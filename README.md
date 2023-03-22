@@ -7,59 +7,146 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## Installation
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+1. PHP 8, Composer, PHP extensions (Described on Laravel site), Python 3.8 is **required**
+2. create ```.env``` file from ```.env.example```
+3. set ```APP_HOST``` variable to ip address of server running on
+4. set ```BROADCAST_DRIVER``` variable to ```pusher```
+5. set ```QUEUE_CONNECTION``` variable to ```database```
+6. set ```PUSHER_APP_ID``` variable to whatever you want (recommended ```local```)
+7. set ```PUSHER_APP_KEY``` variable to whatever you want (recommended ```local```)
+8. set ```PUSHER_APP_SECRET``` variable to whatever you want (recommended ```local```)
+9. set ```PASSPORT_CLIENT_ID``` variable to ```2```
+10. run ```php artisan passport:install``` to generate passport keys
+11. second secret key from previous command output copy to the ```PASSPORT_CLIENT_SECRET``` variable
+12. set ```ADMIN_EMAIL``` to the email address of admin account (whatever you want)
+13. set ```ADMIN_PASSWORD``` to the password of admin account (whatever you want)
+14. in production set ```LARAVEL_WEBSOCKETS_SSL_LOCAL_CERT``` to the absolute path of SSL certificate
+15. in production set ```LARAVEL_WEBSOCKETS_SSL_LOCAL_PK``` to the absolute path of certificate keys
+16. in dev enviroment:
+    1. run ```php artisan websockets:serve``` to run websockets server on :6001 port
+    2. run ```php artisan queue:listen ––queue=broadcast-queue``` to run queue for writing data in websockets channel
+    3. run ```php artisan queue:listen ––queue= Reading``` to run queue for reading experiments outputs
+17. in production enviroment:
+    1. use supervisord for running websockets server and queues
+    2. install supervisord on the server
+    3. in ```/etc/supervisor/conf.d/``` directory create ```laravel-worker.conf``` file and paste this:
+    ```
+    [program:laravel-worker]
+    process_name=%(program_name)s_%(process_num)02d
+    command=/usr/bin/php /var/www/api.olm-experiment.fei.stuba.sk/artisan queue:listen --queue=Reading  --sleep=3 --tries=3 --timeout=0
+    autostart=true
+    autorestart=true
+    stopasgroup=true
+    killasgroup=true
+    user=iolab
+    numprocs=1
+    redirect_stderr=true
+    stdout_logfile=/var/www/api.olm-experiment.fei.stuba.sk/storage/logs/worker.log
+    stopwaitsecs=3600
+    ```
+    4. in ```/etc/supervisor/conf.d/``` directory create ```laravel-websockets-worker.conf``` file and paste this:
+    ```
+    [program:laravel-websockets-worker]
+    process_name=%(program_name)s_%(process_num)02d
+    command=/usr/bin/php /var/www/api.olm-experiment.fei.stuba.sk/artisan queue:listen --queue=broadcast-queue  --sleep=3 --tries=3
+    autostart=true
+    autorestart=true
+    stopasgroup=true
+    killasgroup=true
+    user=iolab
+    numprocs=8
+    redirect_stderr=true
+    stdout_logfile=/var/www/api.olm-experiment.fei.stuba.sk/storage/logs/worker.log
+    stopwaitsecs=3600
+    ```
+    5. in ```/etc/supervisor/conf.d/``` directory create ```laravel-websocket.conf``` file and paste this:
+    ```
+    [program:laravel-websocket]
+    process_name=%(program_name)s_%(process_num)02d
+    command=/usr/bin/php /var/www/api.olm-experiment.fei.stuba.sk/artisan websockets:serve
+    autostart=true
+    autorestart=true
+    stopasgroup=true
+    killasgroup=true
+    user=iolab
+    numprocs=1
+    redirect_stderr=true
+    stdout_logfile=/var/www/api.olm-experiment.fei.stuba.sk/storage/logs/websockets.log
+    stopwaitsecs=3600
+    ```
+    6. run ```sudo supervisorctl reread``` and ```sudo supervisorctl update```
+18. run ```composer install``` to install project dependencies
+19. run ```php artisan key:generate``` to generate application key
+20. run ```php artisan migrate``` to run database migrations
+21. run ```php artisan db:seed``` to seed created database
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Video Stream
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+For providing live video stream of experiment please connect camera to the server using nginx web server and follow these instructions:
+1. run ```apt-get --yes update``` and ```apt-get --yes install wget build-essential libaio1 openssl libpcre3-dev libssl-dev zlib1g-dev ffmpeg;``` to install dependencies
+2. run ```sudo apt install libnginx-mod-rtmp``` to install rtmp nginx module
+3. to `nginx.conf` http section add following to publish hls video stream:
+```
+server {  
+             listen 8080;
 
-## Learning Laravel
+         
+             # Client (VLC etc.) can access HLS here.
+             location /hls {
+               # Serve HLS fragments
+               types {
+                 application/vnd.apple.mpegurl m3u8;
+                 video/mp2t ts;
+               }
+               root /tmp/;
+               add_header 'Cache-Control' 'no-cache';
+               add_header 'Access-Control-Allow-Origin' '*' always;
+               add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+               add_header 'Access-Control-Allow-Headers' 'Range';
+               if ($request_method = 'OPTIONS') {
+                     add_header 'Access-Control-Allow-Origin' '*';
+                     add_header 'Access-Control-Allow-Headers' 'Range';
+                     add_header 'Access-Control-Max-Age' 1728000;
+                     add_header 'Content-Type' 'text/plain charset=UTF-8';
+                     add_header 'Content-Length' 0;
+                        return 204;
+                }
+            }
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+            include snippets/phpmyadmin.conf;
+            ssl on;
+            ssl_certificate /etc/ssl/certs/iolab_sk.pem;
+            ssl_certificate_key /etc/ssl/private/www.iolab.sk.key;
+       }  
+```
+4. also in tne ```nginx.conf``` file add following rtmp section to stream video from camera using rtmp:
+```
+rtmp {
+    server {
+        listen 1935; # port listening to incoming stream
+        chunk_size 2048; # Maximum chunk size for stream multiplexing. Default is 4096.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+        # This application is for splitting the stream into HLS fragments
+        application hls {
+            live on; # Allows live input from above
+            hls on; # Enable HTTP Live Streaming
+            hls_type live; # Either 'event' or 'live' (live means played from current live position)
+            deny play all; # Disable consuming the stream from nginx as rtmp
 
-## Laravel Sponsors
+            hls_fragment 2s;
+            hls_playlist_length 10s;
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[CMS Max](https://www.cmsmax.com/)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+            # Pointing this to an SSD is better as this involves lots of IO
+            hls_path /tmp/hls/;
+            
+            # Instruct clients to adjust resolution according to bandwidth
+            hls_variant _subsd BANDWIDTH=400000;
+            #hls_variant _sd BANDWIDTH=1000000;
+            #hls_variant _hd BANDWIDTH=5000000;
+        }
+    }
+}
+```
+5. restart nginx server with running ```sudo systemctl restart nginx``` command
