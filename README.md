@@ -11,25 +11,30 @@
 
 1. PHP 8, Composer, PHP extensions (Described on Laravel site), Python 3.8 is **required**
 2. run ```composer install``` to install project dependencies
-3. create ```.env``` file from ```.env.example```
-4. set ```APP_HOST``` variable to ip address of server running on
-5. set ```BROADCAST_DRIVER``` variable to ```pusher```
-6. set ```QUEUE_CONNECTION``` variable to ```database```
-7. set ```PUSHER_APP_ID``` variable to whatever you want (recommended ```local```)
-8. set ```PUSHER_APP_KEY``` variable to whatever you want (recommended ```local```)
-9. set ```PUSHER_APP_SECRET``` variable to whatever you want (recommended ```local```)
-10. set ```PASSPORT_CLIENT_ID``` variable to ```2```
-11. run ```php artisan passport:install``` to generate passport keys
-12. second secret key from previous command output copy to the ```PASSPORT_CLIENT_SECRET``` variable
-13. set ```ADMIN_EMAIL``` to the email address of admin account (whatever you want)
-14. set ```ADMIN_PASSWORD``` to the password of admin account (whatever you want)
-15. in production set ```LARAVEL_WEBSOCKETS_SSL_LOCAL_CERT``` to the absolute path of SSL certificate
-16. in production set ```LARAVEL_WEBSOCKETS_SSL_LOCAL_PK``` to the absolute path of certificate keys
-17. in dev enviroment:
+3. run your MySQL server
+4. create ```.env``` file from ```.env.example```
+5. set ```APP_HOST``` variable to ip address of server running on
+6. set your database connection information in the ```DB_CONNECTION```, ```DB_HOST```, ```DB_PORT```, ```DB_DATABASE```, ```DB_USERNAME```, ```DB_PASSWORD```
+7. set ```BROADCAST_DRIVER``` variable to ```pusher```
+8. set ```QUEUE_CONNECTION``` variable to ```database```
+9. set ```PUSHER_APP_ID``` variable to whatever you want (recommended ```local```)
+10. set ```PUSHER_APP_KEY``` variable to whatever you want (recommended ```local```)
+11. set ```PUSHER_APP_SECRET``` variable to whatever you want (recommended ```local```)
+12. set ```ADMIN_EMAIL``` to the email address of admin account (whatever you want)
+13. set ```ADMIN_PASSWORD``` to the password of admin account (whatever you want)
+14. in production set ```LARAVEL_WEBSOCKETS_SSL_LOCAL_CERT``` to the absolute path of SSL certificate
+15. in production set ```LARAVEL_WEBSOCKETS_SSL_LOCAL_PK``` to the absolute path of certificate keys
+16. run ```php artisan key:generate``` to generate application key
+17. run ```php artisan migrate``` to run database migrations
+18. run ```php artisan db:seed``` to seed created database
+19. set ```PASSPORT_CLIENT_ID``` variable to ```2```
+20. run ```php artisan passport:install``` to generate passport keys
+21. second secret key from previous command output copy to the ```PASSPORT_CLIENT_SECRET``` variable in ```.env``` file
+22. in dev enviroment:
     1. run ```php artisan websockets:serve``` to run websockets server on :6001 port
     2. run ```php artisan queue:listen ––queue=broadcast-queue``` to run queue for writing data in websockets channel
     3. run ```php artisan queue:listen ––queue= Reading``` to run queue for reading experiments outputs
-18. in production enviroment:
+23. in production enviroment:
     1. use supervisord for running websockets server and queues
     2. install supervisord on the server
     3. in ```/etc/supervisor/conf.d/``` directory create ```laravel-worker.conf``` file and paste this:
@@ -78,9 +83,6 @@
     stopwaitsecs=3600
     ```
     6. run ```sudo supervisorctl reread``` and ```sudo supervisorctl update```
-19. run ```php artisan key:generate``` to generate application key
-20. run ```php artisan migrate``` to run database migrations
-21. run ```php artisan db:seed``` to seed created database
 
 ## Video Stream
 
