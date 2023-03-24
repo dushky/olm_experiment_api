@@ -32,8 +32,8 @@
 21. second secret key from previous command output copy to the ```PASSPORT_CLIENT_SECRET``` variable in ```.env``` file
 22. in dev enviroment:
     1. run ```php artisan websockets:serve``` to run websockets server on :6001 port
-    2. run ```php artisan queue:listen ––queue=broadcast-queue``` to run queue for writing data in websockets channel
-    3. run ```php artisan queue:listen ––queue= Reading``` to run queue for reading experiments outputs
+    2. run ```php artisan queue:listen --queue=broadcast-queue``` to run queue for writing data in websockets channel
+    3. run ```php artisan queue:listen --queue=Reading``` to run queue for reading experiments outputs
 23. in production enviroment:
     1. use supervisord for running websockets server and queues
     2. install supervisord on the server
