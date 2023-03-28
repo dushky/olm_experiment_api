@@ -35,9 +35,8 @@ class Helpers
     // In case of testing in other simulation software add another case with schema name
     public static function getSchemaNameForLocalStart(string $software): string | null {
         switch($software) {
-            case 'matlab': 
-                return "SARADRC1.slx";
-                break;
+            case 'matlab':
+                return "myPI_13.slx";
             default:
                 return null;
         }
