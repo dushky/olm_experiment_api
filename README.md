@@ -27,16 +27,17 @@
 16. run ```php artisan key:generate``` to generate application key
 17. run ```php artisan migrate``` to run database migrations
 18. run ```php artisan db:seed``` to seed created database
-19. set ```PASSPORT_CLIENT_ID``` variable to ```2```
-20. run ```php artisan passport:install``` to generate passport keys
+19. run ```php artisan passport:install``` to generate passport keys
+20. second client id from previous command output copy to the ```PASSPORT_CLIENT_ID``` 
 21. second secret key from previous command output copy to the ```PASSPORT_CLIENT_SECRET``` variable in ```.env``` file
-22. in dev enviroment:
+22. set nginx vhost root to public directory of the project
+23. in dev enviroment:
     1. run ```php artisan websockets:serve``` to run websockets server on :6001 port
     2. run ```php artisan queue:listen --queue=broadcast-queue``` to run queue for writing data in websockets channel
     3. run ```php artisan queue:listen --queue=Reading``` to run queue for reading experiments outputs
-23. in production enviroment:
-    1. use supervisord for running websockets server and queues
-    2. install supervisord on the server
+24. in production enviroment:
+    1. use Supervisor for running websockets server and queues
+    2. install Supervisor on the server
     3. in ```/etc/supervisor/conf.d/``` directory create ```laravel-worker.conf``` file and paste this:
     ```
     [program:laravel-worker]
@@ -82,7 +83,8 @@
     stdout_logfile=/var/www/"YOUR_APP_FOLDER"/storage/logs/websockets.log
     stopwaitsecs=3600
     ```
-    6. run ```sudo supervisorctl reread``` and ```sudo supervisorctl update```
+    6. run ```sudo supervisorctl reread```, ```sudo supervisorctl update``` and ```sudo supervisorctl
+       start all```
 
 ## Video Stream
 
