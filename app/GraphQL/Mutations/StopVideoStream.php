@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Mutations;
 
+use App\Models\Device;
 use Symfony\Component\Process\Process;
 
 class StopVideoStream
@@ -12,13 +13,19 @@ class StopVideoStream
      */
     public function __invoke($_, array $args)
     {
-        $process = Process::fromShellCommandline("killall ffmpeg");
+        $device = Device::query()->findOrFail($args['deviceID']);
+
+        $process = Process::fromShellCommandline("kill -9 $device->video_process_id");
         $process->run();
+
+        sleep(1);
 
         if (!$process->isSuccessful()) {
             return ['isStopped' => false, 'status' => $process->getErrorOutput()];
         }
 
+        $device->video_process_id = null;
+        $device->save();
         return ['isStopped' => true, 'status' => $process->getOutput()];
     }
 }

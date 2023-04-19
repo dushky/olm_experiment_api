@@ -132,7 +132,7 @@ type CameraStatus {
 
 type VideoStreamStatus {
     isRunning: Boolean!
-    status: String
+    status: String!
 }
 
 type StopVideoStreamStatus {
@@ -142,14 +142,14 @@ type StopVideoStreamStatus {
 
 extend type Query {
     SyncServer: SyncServerData!
-    cameraStatus: CameraStatus!
-    videoStreamStatus: VideoStreamStatus!
+    cameraStatus(deviceID: ID!): CameraStatus!
+    videoStreamStatus(deviceID: ID!): VideoStreamStatus!
 }
 
 extend type Mutation {
     updateDeviceReservationStatus(deviceReservationStatusInput: DeviceReservationStatusInput): UpdateDeviceReservationStatusResult!
-    startVideoStream: VideoStreamStatus!
-    stopVideoStream: StopVideoStreamStatus!
+    startVideoStream(deviceID: ID!): VideoStreamStatus!
+    stopVideoStream(deviceID: ID!): StopVideoStreamStatus!
 
 }
 

@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Queries;
 
+use App\Models\Device;
 use Symfony\Component\Process\Process;
 
 class VideoStreamStatus
@@ -12,21 +13,13 @@ class VideoStreamStatus
      */
     public function __invoke($_, array $args)
     {
-        $process = Process::fromShellCommandline("pgrep -x 'ffmpeg' && echo stream is running || echo stream is NOT running");
-        $process->run();
+        $device = Device::query()->findOrFail($args['deviceID']);
 
-        $isRunning = false;
-        if (!$process->isSuccessful()) {
-            return ['isRunning' => $isRunning, 'status' => $process->getErrorOutput()];
-        }
+        $isRunning = ($device->video_process_id !== null);
+        $output = "Stream is NOT running";
 
-        $output = trim($process->getOutput());
-        if (str_contains($output, 'stream is running')) {
-            $isRunning = true;
-            $output = 'stream is running';
-        }
-        else {
-            $output = 'stream is NOT running';
+        if ($isRunning) {
+            $output = "Stream is running";
         }
 
         return ['isRunning' => $isRunning, 'status' => $output];

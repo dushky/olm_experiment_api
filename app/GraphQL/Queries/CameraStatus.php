@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Queries;
 
+use App\Models\Device;
 use Illuminate\Support\Str;
 use Symfony\Component\Process\Process;
 
@@ -13,11 +14,16 @@ class CameraStatus
      */
     public function __invoke($_, array $args)
     {
+        $device = Device::query()->findOrFail($args['deviceID']);
+        $isConnected = false;
 
-        $process = Process::fromShellCommandline("test -e /dev/video0 && echo is connected || echo is NOT connected");
+        if (!$device->camera_port) {
+            return ['isConnected' => $isConnected, 'status' => "Fill camera port in device settings"];
+        }
+        $device->camera_port = trim($device->camera_port);
+        $process = Process::fromShellCommandline("test -e $device->camera_port && echo is connected || echo is NOT connected");
         $process->run();
 
-        $isConnected = false;
         if (!$process->isSuccessful()) {
             return ['isConnected' => $isConnected, 'status' => $process->getErrorOutput()];
         }
