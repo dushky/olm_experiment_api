@@ -15,7 +15,8 @@ class Device extends Model
         'status',
         'device_type_id',
         'name',
-        'port'
+        'port',
+        'camera_port'
     ];
 
 

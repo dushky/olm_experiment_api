@@ -15,10 +15,12 @@ class CreateDevice
      */
     public function __invoke($_, array $args)
     {
+        $cameraPort = trim($args['camera_port']);
         $device = Device::create([
             'name' => $args['name'],
             'port' => $args['port'],
-            'device_type_id' => $args['device_type_id']
+            'device_type_id' => $args['device_type_id'],
+            'camera_port' => $cameraPort ?: null
         ]);
 
         $device->software()->sync($args['software']);

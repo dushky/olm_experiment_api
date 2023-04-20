@@ -24,6 +24,7 @@ type Device {
     deviceType: DeviceType! @belongsTo
     software: [Software!]! @belongsToMany
     port: String!
+    camera_port: String
     is_reserved: Boolean!
     created_at: DateTime!
     updated_at: DateTime!
@@ -34,6 +35,7 @@ input CreateDevice {
     status: DeviceStatus
     device_type_id: ID!
     port: String!
+    camera_port: String
     software: [ID!]!
 }
 
@@ -42,6 +44,7 @@ input UpdateDevice {
     name: String!
     deviceType: ID!
     port: String!
+    camera_port: String
     software: [ID!]!
 }
 

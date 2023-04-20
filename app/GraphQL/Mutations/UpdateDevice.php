@@ -17,10 +17,13 @@ class UpdateDevice
     {
         // TODO implement the resolver
         $device = Device::where('id', $args['id'])->first();
+
+        $cameraPort = trim($args['camera_port']);
         $device->update([
                 'name' => $args['name'],
                 'device_type_id' => $args['deviceType'],
-                'port' => $args['port']
+                'port' => $args['port'],
+                'camera_port' => $cameraPort ?: null
             ]);
         // dd($device);
         $device->software()->sync($args['software']);
