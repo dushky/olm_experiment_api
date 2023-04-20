@@ -15,11 +15,21 @@ class VideoStreamStatus
     {
         $device = Device::query()->findOrFail($args['deviceID']);
 
-        $isRunning = ($device->video_process_id !== null);
-        $output = "Stream is NOT running";
+        $process = Process::fromShellCommandline("pgrep -f '^ustreamer-$device->name' && echo stream is running || echo stream is NOT running");
+        $process->run();
 
-        if ($isRunning) {
-            $output = "Stream is running";
+        $isRunning = false;
+        if (!$process->isSuccessful()) {
+            return ['isRunning' => $isRunning, 'status' => $process->getErrorOutput()];
+        }
+
+        $output = trim($process->getOutput());
+        if (str_contains($output, 'stream is running')) {
+            $isRunning = true;
+            $output = 'stream is running';
+        }
+        else {
+            $output = 'stream is NOT running';
         }
 
         return ['isRunning' => $isRunning, 'status' => $output];

@@ -15,7 +15,7 @@ class StopVideoStream
     {
         $device = Device::query()->findOrFail($args['deviceID']);
 
-        $process = Process::fromShellCommandline("kill -9 $device->video_process_id");
+        $process = Process::fromShellCommandline("pkill -f '^ustreamer-$device->name'");
         $process->run();
 
         sleep(1);
@@ -24,8 +24,6 @@ class StopVideoStream
             return ['isStopped' => false, 'status' => $process->getErrorOutput()];
         }
 
-        $device->video_process_id = null;
-        $device->save();
         return ['isStopped' => true, 'status' => $process->getOutput()];
     }
 }
