@@ -89,68 +89,24 @@
 ## Video Stream
 
 For providing live video stream of experiment please connect camera to the server using nginx web server and follow these instructions:
-1. run ```apt-get --yes update``` and ```apt-get --yes install wget build-essential libaio1 openssl libpcre3-dev libssl-dev zlib1g-dev ffmpeg;``` to install dependencies
-2. run ```sudo apt install libnginx-mod-rtmp``` to install rtmp nginx module
-3. to `nginx.conf` http section add following to publish hls video stream:
+1. run ```sudo apt -y update``` and ```sudo apt -y install uild-essential libevent-dev libjpeg-dev libbsd-dev``` to install dependencies
+2. in the home directory (```cd ~```) clone project of ustreamer library with command ```git clone –depth=1
+   https://github.com/pikvm/ustreamer```
+3. then go to the downloaded directory with ```cd ustreamer``` and install library with ```make``` command
+4. to `nginx.conf` http section add following to allow stream video via ssl secured port 9000:
 ```
-server {  
-             listen 8080;
-
-         
-             # Client (VLC etc.) can access HLS here.
-             location /hls {
-               # Serve HLS fragments
-               types {
-                 application/vnd.apple.mpegurl m3u8;
-                 video/mp2t ts;
-               }
-               root /tmp/;
-               add_header 'Cache-Control' 'no-cache';
-               add_header 'Access-Control-Allow-Origin' '*' always;
-               add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
-               add_header 'Access-Control-Allow-Headers' 'Range';
-               if ($request_method = 'OPTIONS') {
-                     add_header 'Access-Control-Allow-Origin' '*';
-                     add_header 'Access-Control-Allow-Headers' 'Range';
-                     add_header 'Access-Control-Max-Age' 1728000;
-                     add_header 'Content-Type' 'text/plain charset=UTF-8';
-                     add_header 'Content-Length' 0;
-                        return 204;
-                }
-            }
-
-            include snippets/phpmyadmin.conf;
-            ssl on;
-            ssl_certificate /etc/ssl/certs/iolab_sk.pem;
-            ssl_certificate_key /etc/ssl/private/www.iolab.sk.key;
-       }  
-```
-4. also in tne ```nginx.conf``` file add following rtmp section to stream video from camera using rtmp:
-```
-rtmp {
-    server {
-        listen 1935; # port listening to incoming stream
-        chunk_size 2048; # Maximum chunk size for stream multiplexing. Default is 4096.
-
-        # This application is for splitting the stream into HLS fragments
-        application hls {
-            live on; # Allows live input from above
-            hls on; # Enable HTTP Live Streaming
-            hls_type live; # Either 'event' or 'live' (live means played from current live position)
-            deny play all; # Disable consuming the stream from nginx as rtmp
-
-            hls_fragment 2s;
-            hls_playlist_length 10s;
-
-            # Pointing this to an SSD is better as this involves lots of IO
-            hls_path /tmp/hls/;
-            
-            # Instruct clients to adjust resolution according to bandwidth
-            hls_variant _subsd BANDWIDTH=400000;
-            #hls_variant _sd BANDWIDTH=1000000;
-            #hls_variant _hd BANDWIDTH=5000000;
-        }
+server {
+    listen 9000;
+    location /stream {
+        postpone_output 0;
+        proxy_buffering off;
+        proxy_ignore_headers X-Accel-Buffering;
+        proxy_pass http://0.0.0.0:9001;
     }
-}
+    ssl on;
+    ssl_certificate <absolutna cesta ku .pem certifikatu>;
+    ssl_certificate_key <aboslutna cesta ku .key klucu certifikatu>;
+} 
 ```
 5. restart nginx server with running ```sudo systemctl restart nginx``` command
+6. in the application set port of the connected camera for device in "Device" section
