@@ -90,5 +90,10 @@ return [
 		"name"  => "u_fan",
 		"title" => "Fan control signal",
         "defaultVisibilityFor" => ["matlab"]
-	]
+	],
+    [
+        "name"  => "set_point",
+        "title" => "Set point value",
+        "defaultVisibilityFor" => ["matlab", "openloop"]
+    ]
 ];
