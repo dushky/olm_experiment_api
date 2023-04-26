@@ -178,6 +178,7 @@ class StartReadingProcess implements ShouldQueue
                     if ($index == -1) {
                         array_push($dataToBroadcast, [
                             "name" => $output[$i]['title'],
+                            "tag" => $output[$i]['name'],
                             "defaultVisibilityFor" => $output[$i]['defaultVisibilityFor'] ?? [],
                             "data" => [$splitLine[$i]]
                         ]);

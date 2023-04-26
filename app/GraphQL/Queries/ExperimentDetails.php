@@ -28,7 +28,7 @@ class ExperimentDetails
             $status = "running";
         }
         else {
-            $status = "failed";   
+            $status = "failed";
         }
 
         $device = Device::find($experiment->device_id);
@@ -41,17 +41,17 @@ class ExperimentDetails
             null,
             0
         );
-        
+
         $split = explode("\n", $data);
         $dataToBroadcast = [];
         foreach($split as $line) {
             if ($line != "") {
                 $splitLine = explode(",", $line);
                 for($i = 0; $i < count($splitLine); $i++) {
-                    $index = $this->checkKey($dataToBroadcast, $output[$i]['title']);
+                    $index = $this->checkKey($dataToBroadcast, $output[$i]['name']);
                     if ($index == -1) {
                         array_push($dataToBroadcast, [
-                            "name" => $output[$i]['title'],
+                            "name" => $output[$i]['name'],
                             "values" => [$splitLine[$i]]
                         ]);
                     } else {
@@ -63,7 +63,7 @@ class ExperimentDetails
 
         $header = [];
         foreach($output as $outputType) {
-            array_push($header, $outputType['title']);
+            array_push($header, $outputType['name']);
         }
         $fp = fopen(storage_path("/app/public/$experiment->id.csv"), 'w');
         fputcsv($fp, $header);
