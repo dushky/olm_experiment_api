@@ -90,7 +90,7 @@
 
 For providing live video stream of experiment please connect camera to the server using nginx web server and follow these instructions:
 1. run ```sudo apt -y update``` and ```sudo apt -y install build-essential libevent-dev libjpeg-dev libbsd-dev``` to install dependencies
-2. in the home directory (```cd ~```) clone project of ustreamer library with command ```git clone –-depth=1 https://github.com/pikvm/ustreamer```
+2. in the root directory of application clone project of ustreamer library with command ```git clone –-depth=1 https://github.com/pikvm/ustreamer```
 3. then go to the downloaded directory with ```cd ustreamer``` and install library with ```make``` command
 4. to `nginx.conf` http section add following to allow stream video via ssl secured port 9000:
 ```

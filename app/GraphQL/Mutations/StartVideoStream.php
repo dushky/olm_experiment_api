@@ -21,7 +21,7 @@ class StartVideoStream
 
         $EXIT_ON_NO_CLIENTS_SEC = config('video-stream.exit_on_no_clients_sec');
 
-        $process = Process::fromShellCommandline("~/ustreamer/ustreamer --device=$device->camera_port --host=0.0.0.0 --port=9001 --process-name-prefix='ustreamer-$device->name' --exit-on-no-clients=$EXIT_ON_NO_CLIENTS_SEC --allow-origin=\*");
+        $process = Process::fromShellCommandline(base_path()."/ustreamer/ustreamer --device=$device->camera_port --host=0.0.0.0 --port=9001 --process-name-prefix='ustreamer-$device->name' --exit-on-no-clients=$EXIT_ON_NO_CLIENTS_SEC --allow-origin=\*");
 
         $process->start();
         sleep(1);
