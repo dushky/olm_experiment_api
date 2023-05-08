@@ -10,20 +10,20 @@
 ## Installation
 
 1. PHP 8, Composer, PHP extensions (Described on Laravel site), Python 3.8 is **required**
-2. run ```composer install``` to install project dependencies
-3. run your MySQL server
-4. create ```.env``` file from ```.env.example```
-5. set ```APP_HOST``` variable to ip address of server running on
-6. set your database connection information in the ```DB_CONNECTION```, ```DB_HOST```, ```DB_PORT```, ```DB_DATABASE```, ```DB_USERNAME```, ```DB_PASSWORD```
-7. set ```BROADCAST_DRIVER``` variable to ```pusher```
-8. set ```QUEUE_CONNECTION``` variable to ```database```
-9. set ```PUSHER_APP_ID``` variable to whatever you want (recommended ```local```)
-10. set ```PUSHER_APP_KEY``` variable to whatever you want (recommended ```local```)
-11. set ```PUSHER_APP_SECRET``` variable to whatever you want (recommended ```local```)
-12. set ```ADMIN_EMAIL``` to the email address of admin account (whatever you want)
-13. set ```ADMIN_PASSWORD``` to the password of admin account (whatever you want)
-14. in production set ```LARAVEL_WEBSOCKETS_SSL_LOCAL_CERT``` to the absolute path of SSL certificate
-15. in production set ```LARAVEL_WEBSOCKETS_SSL_LOCAL_PK``` to the absolute path of certificate keys
+2. run your MySQL server
+3. create ```.env``` file from ```.env.example```
+4. set ```APP_HOST``` variable to ip address of server running on
+5. set your database connection information in the ```DB_CONNECTION```, ```DB_HOST```, ```DB_PORT```, ```DB_DATABASE```, ```DB_USERNAME```, ```DB_PASSWORD```
+6. set ```BROADCAST_DRIVER``` variable to ```pusher```
+7. set ```QUEUE_CONNECTION``` variable to ```database```
+8. set ```PUSHER_APP_ID``` variable to whatever you want (recommended ```local```)
+9. set ```PUSHER_APP_KEY``` variable to whatever you want (recommended ```local```)
+10. set ```PUSHER_APP_SECRET``` variable to whatever you want (recommended ```local```)
+11. set ```ADMIN_EMAIL``` to the email address of admin account (whatever you want)
+12. set ```ADMIN_PASSWORD``` to the password of admin account (whatever you want)
+13. in production set ```LARAVEL_WEBSOCKETS_SSL_LOCAL_CERT``` to the absolute path of SSL certificate
+14. in production set ```LARAVEL_WEBSOCKETS_SSL_LOCAL_PK``` to the absolute path of certificate keys
+15. run ```composer install``` to install project dependencies
 16. run ```php artisan key:generate``` to generate application key
 17. run ```php artisan migrate``` to run database migrations
 18. run ```php artisan db:seed``` to seed created database
