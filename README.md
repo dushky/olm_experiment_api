@@ -47,7 +47,7 @@
     autorestart=true
     stopasgroup=true
     killasgroup=true
-    user=iolab
+    user={user}
     numprocs=1
     redirect_stderr=true
     stdout_logfile=/var/www/"YOUR_APP_FOLDER"/storage/logs/worker.log
@@ -62,7 +62,7 @@
     autorestart=true
     stopasgroup=true
     killasgroup=true
-    user=iolab
+    user={user}
     numprocs=8
     redirect_stderr=true
     stdout_logfile=/var/www/"YOUR_APP_FOLDER"/storage/logs/worker.log
@@ -77,7 +77,7 @@
     autorestart=true
     stopasgroup=true
     killasgroup=true
-    user=iolab
+    user={user}
     numprocs=1
     redirect_stderr=true
     stdout_logfile=/var/www/"YOUR_APP_FOLDER"/storage/logs/websockets.log
