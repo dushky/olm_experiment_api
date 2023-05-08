@@ -26,12 +26,12 @@ class StartVideoStream
         $process->start();
         sleep(1);
 
-        if (!$process->isStarted()) {
-            return ["isRunning" => $process->isStarted(), "status" => $process->getErrorOutput()];
+        if (!$process->isRunning()) {
+            return ["isRunning" => false, "status" => $process->getErrorOutput()];
 
         }
 
-        return ["isRunning" => $process->isStarted(), "status" => "Video stream is running"];
+        return ["isRunning" => true, "status" => "Video stream is running"];
 
     }
 }
