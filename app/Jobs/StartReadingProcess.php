@@ -50,7 +50,7 @@ class StartReadingProcess implements ShouldQueue
      */
     public function handle()
     {
-        // CHECK INIT
+        // CHECK INIT - initFile does not exist in l3DSquare
         if (Helpers::checkIfInitIsAvailable(base_path()."/server_scripts/$this->deviceType")) {
             $initFile = Helpers::getScriptName("init", base_path()."/server_scripts/$this->deviceType");
 
@@ -68,6 +68,7 @@ class StartReadingProcess implements ShouldQueue
             sleep(1);
 
             if ($process->getPid() == null) {
+                Log::debug("process = null");
                 broadcast(new DataBroadcaster(null, $this->device->name, $process->getErrorOutput(), false));
             }
 
@@ -76,6 +77,10 @@ class StartReadingProcess implements ShouldQueue
 
 
         $lastDataLength = 0;
+        Log::debug("path: ", [$this->path]);
+        Log::debug("device port", [$this->device->port]);
+        Log::debug("output", [$this->fileName]);
+        Log::debug("input", [$this->args['runScriptInput']['inputParameter']]);
 
         $process = new Process([
             "$this->path",
