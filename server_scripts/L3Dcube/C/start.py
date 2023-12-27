@@ -4,7 +4,7 @@ import argparse
 import subprocess
 import os
 
-def generate_arduino_code(setup, c_code_snippet):
+def generate_arduino_code(c_code_snippet):
     arduino_code_template = """
 #include <Adafruit_NeoPixel.h>
 
@@ -18,11 +18,11 @@ void setup() {{
   strip.begin();
   strip.setBrightness(20);
   strip.show();
-  {}
 }}
 
 void loop() {{
   {}
+  delay(500);
 }}
 
 int xyzToIndex(int x, int y, int z) {{
@@ -71,7 +71,7 @@ void indexer() {{
 """
     
     # Insert the C code snippet into the template
-    return arduino_code_template.format(setup, c_code_snippet)
+    return arduino_code_template.format(c_code_snippet)
 
 def compile_and_upload(code, port, board_type="arduino:avr:mega"):
     # Create a temporary directory to hold the sketch
@@ -108,27 +108,24 @@ def getArguments():
     port = args.port
     args = args.input
 
-    print("ARGS \n")
-    print(args)
-    # Manually extracting the values for 'setup' and 'c_code'
-    setup_start = args.find("setup:") + len("setup:")
-    setup_end = args.find(",c_code:")
-    setup_value = args[setup_start:setup_end].strip()
-
     c_code_start = args.find("c_code:") + len("c_code:")
     c_code_end = args.find(",uploaded_file:")
     c_code_value = args[c_code_start:c_code_end].strip()
 
-    uploaded_file_start = args.find("uploaded_file:") + len("uploaded_file:")
-    uploaded_file_end = args.find(",file_name:")
-    uploaded_file_value = args[uploaded_file_start:uploaded_file_end].strip()
 
-    file_name_value = args.split("file_name:")[-1].strip()
+    uploaded_file_start = args.rfind("uploaded_file:") + len("uploaded_file:")
+    uploaded_file_and_file_name = args[uploaded_file_start:].strip()
 
-    # Constructing the associative array
+    if ',' in uploaded_file_and_file_name:
+        uploaded_file_value, file_name_part = uploaded_file_and_file_name.rsplit(',', 1)
+
+        file_name_value = file_name_part.split(':', 1)[-1].strip()
+    else:
+        uploaded_file_value = uploaded_file_and_file_name
+        file_name_value = ''
+
     associative_array = {
-        "setup": setup_value.replace("\n", ""),
-        "c_code": c_code_value.replace("\n", ""),
+        "c_code": c_code_value.replace("\n", " "),
         "uploaded_file": uploaded_file_value,
         "file_name": file_name_value
     }
@@ -141,15 +138,8 @@ def getArguments():
 
 def main():
     args=getArguments()
-    print("ARGS IN MAIN \n")
-    print(args)
-  
-    full_arduino_code = generate_arduino_code(args["setup"], args["c_code"])
-    
-    print("ARDUINO CODE \n")
-    print(full_arduino_code)
+    full_arduino_code = generate_arduino_code(args["c_code"])
     compile_and_upload(full_arduino_code, args["port"])
-
 
 if __name__ == '__main__':
     main()
