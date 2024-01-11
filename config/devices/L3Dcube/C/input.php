@@ -13,15 +13,17 @@ return [
 			"rows" => 12,
 			"multiline" => true
 		],
-		/*
+	
 		[
-			"name"  =>      "uploaded_file",
-			"rules" =>      "required",
-			"title" =>      "Simulation scheme",
-			"type"  =>      "file",
+			"name" => "uploaded_code_file",
+			"rules" => "required",
+			"title" => "Input File",
+			"type" => "file",
+			"row" => 2,
+			"order" => 2,
 			"meaning" => "parent_schema"
 		],
-		*/
+		
 	],
 	"stop" => [],
 	"change" => []

@@ -57,6 +57,13 @@ void fillCubeRed() {{
   strip.show();
 }}
 
+void fillCubeGreen() {{
+  for(int i = 0; i < NUM_LEDS; i++) {{
+    strip.setPixelColor(i, strip.Color(0, 255, 0));
+  }}
+  strip.show();
+}}
+
 void indexer() {{
   for (int x = 0; x < CUBE_SIZE; x++) {{
     for (int y = 0; y < CUBE_SIZE; y++) {{
@@ -108,38 +115,36 @@ def getArguments():
     port = args.port
     args = args.input
 
-    c_code_start = args.find("c_code:") + len("c_code:")
-    c_code_end = args.find(",uploaded_file:")
-    c_code_value = args[c_code_start:c_code_end].strip()
+    input_str = args
+    keys = ['c_code', 'uploaded_code_file', 'uploaded_file', 'file_name']
+    result = {}
 
+    last_index = 0
+    for key in keys:
+        start_index = input_str.find(key + ":", last_index) + len(key) + 1
+        if start_index != -1:
+            last_index = input_str.find(",", start_index)
+            last_index = last_index if last_index != -1 else None
+            value = input_str[start_index:last_index]
+            result[key] = value.strip() if value else None
+            last_index = last_index if last_index else len(input_str)
 
-    uploaded_file_start = args.rfind("uploaded_file:") + len("uploaded_file:")
-    uploaded_file_and_file_name = args[uploaded_file_start:].strip()
+    #"c_code": c_code_value.replace("\n", " "),
+ 
+    result["port"] = port
+    result["output"] = output
 
-    if ',' in uploaded_file_and_file_name:
-        uploaded_file_value, file_name_part = uploaded_file_and_file_name.rsplit(',', 1)
-
-        file_name_value = file_name_part.split(':', 1)[-1].strip()
-    else:
-        uploaded_file_value = uploaded_file_and_file_name
-        file_name_value = ''
-
-    associative_array = {
-        "c_code": c_code_value.replace("\n", " "),
-        "uploaded_file": uploaded_file_value,
-        "file_name": file_name_value
-    }
-
-    associative_array["port"] = port
-    associative_array["output"] = output
-
-    return(associative_array)
-
+    return(result)
 
 def main():
     args=getArguments()
-    full_arduino_code = generate_arduino_code(args["c_code"])
-    compile_and_upload(full_arduino_code, args["port"])
+
+    if(args["uploaded_code_file"] and args["uploaded_code_file"] != ""):
+      full_arduino_code = generate_arduino_code(args["uploaded_code_file"])
+      compile_and_upload(full_arduino_code, args["port"])
+    else:
+      full_arduino_code = generate_arduino_code(args["c_code"])
+      compile_and_upload(full_arduino_code, args["port"])
 
 if __name__ == '__main__':
     main()
