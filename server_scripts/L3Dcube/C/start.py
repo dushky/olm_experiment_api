@@ -138,7 +138,8 @@ def getArguments():
 
 def main():
     args=getArguments()
-
+    print("ARGS")
+    print(args)
     if(args["uploaded_code_file"] and args["uploaded_code_file"] != ""):
       full_arduino_code = generate_arduino_code(args["uploaded_code_file"])
       compile_and_upload(full_arduino_code, args["port"])
