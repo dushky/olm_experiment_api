@@ -143,6 +143,15 @@ def main():
     print(args)
     
     
+    code = """
+      def say_hello(name):
+          return "Hello, " + name
+
+      result = say_hello('World')
+      print(result)
+      """
+
+    exec(code)
 
 
 

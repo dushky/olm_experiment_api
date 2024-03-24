@@ -41,8 +41,16 @@ class RunScript
             $schemaFileName = explode(".", $args['runScriptInput']['fileName']);
         }
 
+        $demoFileName = explode(".", $args['runScriptInput']['demoName']);
+
+
         // Log::channel('server')->error("ERRORMESSAGE: " . Helpers::getSchemaNameForLocalStart($software));
         $args['runScriptInput']['inputParameter'] = $args['runScriptInput']['inputParameter'] . ",uploaded_file:". storage_path('tmp/uploads/') . ",file_name:". $schemaFileName[0];
+
+        if ($deviceName == "L3Dcube") {
+            $args['runScriptInput']['inputParameter'] = $args['runScriptInput']['inputParameter'] . ",uploaded_file:". storage_path('tmp/uploads/') . ",demo_name:". $demoFileName[0];
+
+        }
 
         Log::channel('server')->error("ERRORMESSAGE: " . $args['runScriptInput']['inputParameter']);
         $experiment = ExperimentLog::create([
